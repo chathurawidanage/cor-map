@@ -1,91 +1,167 @@
 import React from 'react';
 import './App.css';
-import {Graph} from "react-d3-graph";
+import Graph from "react-graph-vis";
 
-const myConfig = {
-    nodeHighlightBehavior: true,
-    node: {
-        color: "lightgreen",
-        size: 120,
-        highlightStrokeColor: "blue",
+const options = {
+    layout: {},
+    edges: {
+        color: "#000000"
     },
-    link: {
-        highlightColor: "lightblue",
+    nodes: {
+        image: "https://img.icons8.com/pastel-glyph/2x/person-male.png",
+        imagePadding: {
+            left: 0,
+            top: 0,
+            bottom: 0,
+            right: 0
+        }
     },
+    autoResize: true,
+    height: window.innerHeight + "px",
+    width: '100%'
 };
 
-const data = {
-    nodes: [{id: "Harry"}, {id: "Sally"}, {id: "Alice"}],
-    links: [{source: "Harry", target: "Sally"}, {source: "Harry", target: "Alice"}],
+const events = {
+    select: function (event) {
+        var {nodes, edges} = event;
+    }
 };
 
-function App() {
 
-    // graph event callbacks
-    const onClickGraph = function () {
-        //window.alert(`Clicked the graph background`);
-    };
+export default class App extends React.Component {
 
-    const onClickNode = function (nodeId) {
-        //window.alert(`Clicked node ${nodeId}`);
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            graph: {
+                nodes: [],
+                edges: []
+            }
+        }
+    }
 
-    const onDoubleClickNode = function (nodeId) {
-        //window.alert(`Double clicked node ${nodeId}`);
-    };
+    addLink(edges, from, to) {
+        edges.push({from, to});
+    }
 
-    const onRightClickNode = function (event, nodeId) {
-        //window.alert(`Right clicked node ${nodeId}`);
-    };
+    addNode(nodes, label, color, img = "https://img.icons8.com/pastel-glyph/2x/person-male.png") {
+        nodes.push({
+            id: label,
+            label: label,
+            color: {background: color},
+            image: img,
+            shape: "circularImage"
+        })
+    }
 
-    const onMouseOverNode = function (nodeId) {
-        //window.alert(`Mouse over node ${nodeId}`);
-    };
+    addInfected(nodes, label) {
+        this.addNode(nodes, label, "#ef9a9a");
+    }
 
-    const onMouseOutNode = function (nodeId) {
-        //window.alert(`Mouse out node ${nodeId}`);
-    };
 
-    const onClickLink = function (source, target) {
-        //window.alert(`Clicked link between ${source} and ${target}`);
-    };
+    addRecovered(nodes, label) {
+        this.addNode(nodes, label, "#A5D6A7");
+    }
 
-    const onRightClickLink = function (event, source, target) {
-        //window.alert(`Right clicked link between ${source} and ${target}`);
-    };
+    addDead(nodes, label) {
+        this.addNode(nodes, label, "#B0BEC5");
+    }
 
-    const onMouseOverLink = function (source, target) {
-        //window.alert(`Mouse over in link between ${source} and ${target}`);
-    };
+    addCountry(nodes, label) {
+        this.addNode(nodes, label, "#81D4FA", "https://i.ya-webdesign.com/images/plane-vector-png-2.png");
+    }
 
-    const onMouseOutLink = function (source, target) {
-        //window.alert(`Mouse out link between ${source} and ${target}`);
-    };
+    componentDidMount() {
+        let nodes = [];
+        let edges = [];
+        ["IT", "GB", "QT", "IN", "DE", "CN"].forEach(c => this.addCountry(nodes, c));
+        for (let i = 0; i < 35; i++) {
+            if ([1, 2].indexOf(i + 1) === -1) {
+                this.addInfected(nodes, "c" + (i + 1));
+            }
+        }
 
-    const onNodePositionChange = function (nodeId, x, y) {
-        //window.alert(`Node ${nodeId} is moved to new position. New position is x= ${x} y= ${y}`);
-    };
+        "c6, c5, c13, c7, c19, c16, c18, c18, c15, c14, c17".split(",").forEach(cIt => {
+            this.addLink(edges, "IT", cIt.trim());
+        });
 
-    return (
-        <div className="App">
-            <Graph
-                id="graph-id" // id is mandatory, if no id is defined rd3g will throw an error
-                data={data}
-                config={myConfig}
-                onClickNode={onClickNode}
-                onDoubleClickNode={onDoubleClickNode}
-                onRightClickNode={onRightClickNode}
-                onClickGraph={onClickGraph}
-                onClickLink={onClickLink}
-                onRightClickLink={onRightClickLink}
-                onMouseOverNode={onMouseOverNode}
-                onMouseOutNode={onMouseOutNode}
-                onMouseOverLink={onMouseOverLink}
-                onMouseOutLink={onMouseOutLink}
-                onNodePositionChange={onNodePositionChange}
-            />;
-        </div>
-    );
+        // IT cluster
+        this.addLink(edges, "c15", "c10");
+        this.addLink(edges, "c10", "c11");
+
+        this.addDead(nodes, "x1");
+        this.addLink(edges, "IT", "x1");
+
+        this.addRecovered(nodes, "c2");
+        this.addLink(edges, "x1", "c2");
+        this.addLink(edges, "c2", "c3");
+        this.addLink(edges, "c3", "c20");
+        this.addLink(edges, "c9", "c23");
+
+        //DE cluster
+        this.addLink(edges, "DE", "c31");
+        this.addLink(edges, "DE", "c4");
+        this.addLink(edges, "DE", "c12");
+        this.addLink(edges, "c4", "c12");
+
+        //CN
+        this.addRecovered(nodes, "c1");
+        this.addLink(edges, "CN", "c1");
+
+        //IN
+        this.addLink(edges, "IN", "c29");
+
+        //GB
+        this.addLink(edges, "GB", "c32");
+
+        //QT
+        this.addLink(edges, "QT", "c35");
+
+        this.setState({
+            graph: {nodes, edges}
+        })
+
+        // TEIService.getTEIs().then(data => {
+        //     let teis = data && data.data && data.data.trackedEntityInstances;
+        //     let teiIds = {};
+        //     let nodes = [];
+        //     let edges = [];
+        //     if (teis) {
+        //         teis.forEach(tei => {
+        //             nodes.push({id: tei.trackedEntityInstance});
+        //             teiIds[tei.trackedEntityInstance] = true;
+        //
+        //             if (tei.relationships && tei.relationships.length > 0) {
+        //                 tei.relationships.forEach(rel => {
+        //                     console.log(rel);
+        //                     edges.push({
+        //                         source: rel.from.trackedEntityInstance.trackedEntityInstance,
+        //                         target: rel.to.trackedEntityInstance.trackedEntityInstance
+        //                     })
+        //                 });
+        //             }
+        //         });
+        //
+        //         edges = edges.filter(l => teiIds[l.source] && teiIds[l.target]);
+        //
+        //         // this.setState({
+        //         //     data: {nodes, edges}
+        //         // })
+        //     } else {
+        //         console.error("Unknown response");
+        //     }
+        // }).catch(err => console.log(err));
+    }
+
+    render() {
+        return (
+            <div className="App">
+                <Graph
+                    graph={this.state.graph}
+                    options={options}
+                    events={events}
+                />
+            </div>
+        );
+    }
 }
-
-export default App;
