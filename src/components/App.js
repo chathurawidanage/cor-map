@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import Graph from "react-graph-vis";
+import TEIService from "../services/TEIService";
 
 const options = {
     layout: {},
@@ -71,7 +72,7 @@ export default class App extends React.Component {
         this.addNode(nodes, label, "#81D4FA", "https://i.ya-webdesign.com/images/plane-vector-png-2.png");
     }
 
-    componentDidMount() {
+    populateSampleData() {
         let nodes = [];
         let edges = [];
         ["IT", "GB", "QT", "IN", "DE", "CN"].forEach(c => this.addCountry(nodes, c));
@@ -120,37 +121,37 @@ export default class App extends React.Component {
         this.setState({
             graph: {nodes, edges}
         })
+    }
 
-        // TEIService.getTEIs().then(data => {
-        //     let teis = data && data.data && data.data.trackedEntityInstances;
-        //     let teiIds = {};
-        //     let nodes = [];
-        //     let edges = [];
-        //     if (teis) {
-        //         teis.forEach(tei => {
-        //             nodes.push({id: tei.trackedEntityInstance});
-        //             teiIds[tei.trackedEntityInstance] = true;
-        //
-        //             if (tei.relationships && tei.relationships.length > 0) {
-        //                 tei.relationships.forEach(rel => {
-        //                     console.log(rel);
-        //                     edges.push({
-        //                         source: rel.from.trackedEntityInstance.trackedEntityInstance,
-        //                         target: rel.to.trackedEntityInstance.trackedEntityInstance
-        //                     })
-        //                 });
-        //             }
-        //         });
-        //
-        //         edges = edges.filter(l => teiIds[l.source] && teiIds[l.target]);
-        //
-        //         // this.setState({
-        //         //     data: {nodes, edges}
-        //         // })
-        //     } else {
-        //         console.error("Unknown response");
-        //     }
-        // }).catch(err => console.log(err));
+    componentDidMount() {
+        //this.populateSampleData();
+        TEIService.getTEIs().then(data => {
+            let teis = data && data.data && data.data.trackedEntityInstances;
+            let teiIds = {};
+            let nodes = [];
+            let edges = [];
+            if (teis) {
+                teis.forEach(tei => {
+                    this.addInfected(nodes, tei.trackedEntityInstance);
+                    teiIds[tei.trackedEntityInstance] = true;
+
+                    if (tei.relationships && tei.relationships.length > 0) {
+                        tei.relationships.forEach(rel => {
+                            this.addLink(edges, rel.from.trackedEntityInstance.trackedEntityInstance,
+                                rel.to.trackedEntityInstance.trackedEntityInstance);
+                        });
+                    }
+                });
+
+                edges = edges.filter(l => teiIds[l.from] && teiIds[l.to]);
+
+                this.setState({
+                    graph: {nodes, edges}
+                });
+            } else {
+                console.error("Unknown response");
+            }
+        }).catch(err => console.log(err));
     }
 
     render() {
