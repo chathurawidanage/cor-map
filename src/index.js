@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './components/App';
 import * as serviceWorker from './serviceWorker';
+import Dashboard from "./components/Dashboard";
+import "@blueprintjs/core/lib/css/blueprint.css";
 
-ReactDOM.render(<App/>, document.getElementById('root'));
+ReactDOM.render(<Dashboard/>, document.getElementById('root'));
 
 serviceWorker.unregister();

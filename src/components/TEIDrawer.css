@@ -1,0 +1,24 @@
+.info-wrapper {
+    padding: 10px;
+    overflow-y: scroll;
+    height: 100%;
+}
+
+.info-tag {
+    padding-bottom: 10px;
+    line-height: 30px;
+}
+
+.info-title {
+    padding: 0;
+    margin: 0;
+}
+
+.info-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.info-actions{
+    text-align: right;
+}

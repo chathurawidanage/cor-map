@@ -2,6 +2,22 @@ import React from 'react';
 import './App.css';
 import Graph from "react-graph-vis";
 import TEIService from "../services/TEIService";
+import * as DHIS2Costants from "../DHIS2Constants";
+import {
+    DHIS2_ENDPOINT,
+    GENDER_FEMALE,
+    GENDER_MALE,
+    PROGRAM_ID_CASE,
+    PROGRAM_ID_SUSPECT,
+    REL_CASE_TO_CASE
+} from "../DHIS2Constants";
+import Loader from "./loader/Loader";
+import TEIDrawer from "./TEIDrawer";
+import * as Utils from "../Utils";
+import {REL_CASE_TO_SUSPECT} from "../DHIS2Constants";
+
+const CASE = 1;
+const SUSPECT = 2;
 
 const options = {
     layout: {},
@@ -9,23 +25,11 @@ const options = {
         color: "#000000"
     },
     nodes: {
-        image: "https://img.icons8.com/pastel-glyph/2x/person-male.png",
-        imagePadding: {
-            left: 0,
-            top: 0,
-            bottom: 0,
-            right: 0
-        }
+        imagePadding: 5
     },
     autoResize: true,
-    height: window.innerHeight + "px",
+    height: (window.innerHeight - 50) + "px",
     width: '100%'
-};
-
-const events = {
-    select: function (event) {
-        var {nodes, edges} = event;
-    }
 };
 
 
@@ -37,17 +41,57 @@ export default class App extends React.Component {
             graph: {
                 nodes: [],
                 edges: []
+            },
+            loading: true,
+            selectedTei: undefined,
+            teiToProgram: {},
+            teiDB: {
+                program: {
+                    [DHIS2Costants.PROGRAM_ID_CASE]: [],
+                    [DHIS2Costants.PROGRAM_ID_SUSPECT]: []
+                },
+                relationships: {
+                    [DHIS2Costants.REL_CASE_TO_CASE]: [],
+                    [DHIS2Costants.REL_CASE_TO_SUSPECT]: [],
+                },
+                attributes: {}
             }
-        }
+        };
+
+        this.events = {
+            doubleClick: (event) => {
+                let {nodes, edges} = event;
+                if (nodes.length > 0) {
+                    let tei = nodes[0];
+                    this.setState({
+                        selectedTei: {id: tei, program: this.state.teiDB.attributes[tei].program}
+                    });
+                }
+            }
+        };
     }
 
-    addLink(edges, from, to) {
-        edges.push({from, to});
+    openTracker = (tei) => {
+        window.open(`${DHIS2_ENDPOINT}/dhis-web-tracker-capture/index.html#/dashboard?tei=${tei}&program=Cr6bmkKzQ5c&ou=GYBZ1og9bk7`, '_blank');
+    };
+
+    setLoading = (loading) => {
+        this.setState({
+            loading: loading
+        });
+    };
+
+    addCaseToCaseLink = (edges, from, to) => {
+        this.addLink(edges, from, to, "red");
+    };
+
+    addLink(edges, from, to, color = "black") {
+        edges.push({from, to, color});
     }
 
-    addNode(nodes, label, color, img = "https://img.icons8.com/pastel-glyph/2x/person-male.png") {
+    addNode(nodes, id, label, color, img = "img/man.png") {
         nodes.push({
-            id: label,
+            id: id,
             label: label,
             color: {background: color},
             image: img,
@@ -55,17 +99,21 @@ export default class App extends React.Component {
         })
     }
 
-    addInfected(nodes, label) {
-        this.addNode(nodes, label, "#ef9a9a");
+    addInfected(nodes, id, label, img) {
+        this.addNode(nodes, id, label, "#ef9a9a", img);
+    }
+
+    addSuspect(nodes, id, label, img) {
+        this.addNode(nodes, id, label, "#FFEB3B", img);
     }
 
 
-    addRecovered(nodes, label) {
-        this.addNode(nodes, label, "#A5D6A7");
+    addRecovered(nodes, id, label, img) {
+        this.addNode(nodes, id, label, "#A5D6A7", img);
     }
 
-    addDead(nodes, label) {
-        this.addNode(nodes, label, "#B0BEC5");
+    addDead(nodes, id, label, img) {
+        this.addNode(nodes, id, label, "#B0BEC5", img);
     }
 
     addCountry(nodes, label) {
@@ -123,45 +171,202 @@ export default class App extends React.Component {
         })
     }
 
+    processTEIResponse(teiDB, trackedEntityInstances, program) {
+        trackedEntityInstances.forEach(tei => {
+            teiDB.program[program].push(tei.trackedEntityInstance);
+            teiDB.attributes[tei.trackedEntityInstance] = {
+                age: 0,
+                id: "NA",
+                gender: -1,
+                program: program
+            };
+            if (tei.relationships && tei.relationships.length > 0) {
+                tei.relationships.forEach(rel => {
+                    teiDB.relationships[rel.relationshipType].push({
+                        from: rel.from.trackedEntityInstance.trackedEntityInstance,
+                        to: rel.to.trackedEntityInstance.trackedEntityInstance
+                    });
+                });
+            }
+        });
+    }
+
+    processTEIAttributeResponse(teiDB, attributes) {
+        attributes.forEach(row => {
+            if (teiDB.attributes[row[0]]) {
+                let dob = row[7];
+                if (dob !== "") {
+                    try {
+                        teiDB.attributes[row[0]].age = Math.ceil((Date.now() - new Date(dob).getTime()) / 3.154e+10);
+                    } catch (e) {
+                        console.error("Failed to calculate age", e);
+                    }
+                }
+
+                if (row[8] !== "") {
+                    teiDB.attributes[row[0]].gender = row[9] === "Male" ? GENDER_MALE : GENDER_FEMALE;
+                }
+
+                if (row[9] !== "") {
+                    teiDB.attributes[row[0]].id = row[9];
+                }
+                console.log()
+            }
+        });
+    }
+
+    updateVisualization = () => {
+        this.setLoading(true);
+        let nodes = [];
+        let edges = [];
+
+        console.log(this.state.teiDB);
+
+        this.state.teiDB.program[PROGRAM_ID_CASE].forEach(cs => {
+            this.addInfected(nodes, cs,
+                this.state.teiDB.attributes[cs].id + ` [${this.state.teiDB.attributes[cs].age} yrs]`,
+                Utils.getImgForGender(this.state.teiDB.attributes[cs].gender)
+            );
+        });
+        this.state.teiDB.program[PROGRAM_ID_SUSPECT].forEach(sus => {
+            this.addSuspect(nodes, sus,
+                this.state.teiDB.attributes[sus].id + ` [${this.state.teiDB.attributes[sus].age} yrs]`,
+                Utils.getImgForGender(this.state.teiDB.attributes[sus].gender)
+            );
+        });
+
+        this.state.teiDB.relationships[REL_CASE_TO_CASE].forEach(rel => {
+            this.addCaseToCaseLink(edges, rel.from, rel.to);
+        });
+
+        this.state.teiDB.relationships[REL_CASE_TO_SUSPECT].forEach(rel => {
+            this.addLink(edges, rel.from, rel.to);
+        });
+
+        this.setState({
+            graph: {nodes, edges},
+            loading: false
+        });
+    };
+
     componentDidMount() {
         //this.populateSampleData();
-        TEIService.getTEIs().then(data => {
-            let teis = data && data.data && data.data.trackedEntityInstances;
-            let teiIds = {};
-            let nodes = [];
-            let edges = [];
-            if (teis) {
-                teis.forEach(tei => {
-                    this.addInfected(nodes, tei.trackedEntityInstance);
-                    teiIds[tei.trackedEntityInstance] = true;
 
-                    if (tei.relationships && tei.relationships.length > 0) {
-                        tei.relationships.forEach(rel => {
-                            this.addLink(edges, rel.from.trackedEntityInstance.trackedEntityInstance,
-                                rel.to.trackedEntityInstance.trackedEntityInstance);
-                        });
-                    }
-                });
+        let attributeToFetch = [DHIS2Costants.ATTR_DOB, DHIS2Costants.ATTR_GENDER, DHIS2Costants.ATTR_SN];
 
-                edges = edges.filter(l => teiIds[l.from] && teiIds[l.to]);
+        let programs = [PROGRAM_ID_CASE, PROGRAM_ID_SUSPECT];
 
-                this.setState({
-                    graph: {nodes, edges}
-                });
-            } else {
-                console.error("Unknown response");
-            }
-        }).catch(err => console.log(err));
+        let requests = [];
+        programs.forEach(program => {
+            requests.push(TEIService.getTEIs(program));
+            requests.push(TEIService.getTEIAttributes(program, attributeToFetch));
+        });
+
+        // load data
+        Promise.all(requests).then(results => {
+            let teiDB = this.state.teiDB;
+
+            // process TEI response
+            [0, 2].forEach(i => {
+                if (results[i].data && results[i].data.trackedEntityInstances) {
+                    this.processTEIResponse(teiDB, results[i].data.trackedEntityInstances, programs[i / 2]);
+                } else {
+                    console.warn("Nothing found for Case", i);
+                }
+            });
+
+            [1, 3].forEach(i => {
+                if (results[i].data && results[i].data.rows) {
+                    this.processTEIAttributeResponse(teiDB, results[i].data.rows);
+                } else {
+                    console.warn("No attributes found for Case", i);
+                }
+            });
+
+            this.setState({
+                teiDB
+            }, this.updateVisualization);
+        });
+
+        // TEIService.getTEIs(DHIS2Costants.PROGRAM_ID_CASE).then(data => {
+        //     console.log(data);
+        //     let teis = data && data.data && data.data.trackedEntityInstances;
+        //     let teiToProgram = {};
+        //     let nodes = [];
+        //     let edges = [];
+        //     if (teis) {
+        //         teis.forEach(tei => {
+        //             //this.addInfected(nodes, tei.trackedEntityInstance);
+        //             teiToProgram[tei.trackedEntityInstance] = DHIS2Costants.PROGRAM_ID_CASE;
+        //
+        //             if (tei.relationships && tei.relationships.length > 0) {
+        //                 tei.relationships.forEach(rel => {
+        //                     if (rel.relationshipType === REL_CASE_TO_CASE) {
+        //                         this.addCaseToCaseLink(edges, rel.from.trackedEntityInstance.trackedEntityInstance,
+        //                             rel.to.trackedEntityInstance.trackedEntityInstance);
+        //                     } else {
+        //                         this.addLink(edges, rel.from.trackedEntityInstance.trackedEntityInstance,
+        //                             rel.to.trackedEntityInstance.trackedEntityInstance);
+        //                         teiToProgram[rel.to.trackedEntityInstance.trackedEntityInstance] = DHIS2Costants.PROGRAM_ID_SUSPECT;
+        //                     }
+        //                 });
+        //             }
+        //         });
+        //
+        //         // first add based on type
+        //         Object.keys(teiToProgram).forEach(teiId => {
+        //             if (teiToProgram[teiId] === DHIS2Costants.PROGRAM_ID_CASE) {
+        //                 this.addInfected(nodes, teiId);
+        //             } else {
+        //                 this.addSuspect(nodes, teiId);
+        //             }
+        //         });
+        //
+        //         // load other suspects
+        //         TEIService.getTEIs(DHIS2Costants.PROGRAM_ID_SUSPECT).then(data => {
+        //             let teis = data && data.data && data.data.trackedEntityInstances;
+        //             teis.forEach(tei => {
+        //                 if (!teiToProgram[tei.trackedEntityInstance]) {
+        //                     teiToProgram[tei.trackedEntityInstance] = DHIS2Costants.PROGRAM_ID_SUSPECT;
+        //                     this.addSuspect(nodes, tei.trackedEntityInstance);
+        //                 }
+        //             });
+        //
+        //             let count = edges.length;
+        //             edges = edges.filter(l => teiToProgram[l.from] && teiToProgram[l.to]);
+        //             console.log("Dropped", count - edges.length);
+        //             this.setState({
+        //                 graph: {nodes, edges},
+        //                 loading: false,
+        //                 teiToProgram
+        //             });
+        //         }).catch(err => {
+        //             console.log("Failed to load suspects");
+        //         });
+        //     } else {
+        //         console.error("Unknown response");
+        //     }
+        // }).catch(err => console.log(err));
     }
 
     render() {
         return (
             <div className="App">
-                <Graph
-                    graph={this.state.graph}
-                    options={options}
-                    events={events}
-                />
+                {
+                    this.state.selectedTei ? <TEIDrawer te={this.state.selectedTei} onClose={() => {
+                        this.setState({
+                            selectedTei: false
+                        });
+                    }}/> : null
+                }
+                {
+                    this.state.loading ?
+                        <Loader/> :
+                        <Graph
+                            graph={this.state.graph}
+                            options={options}
+                            events={this.events}/>
+                }
             </div>
         );
     }
