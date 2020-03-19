@@ -11,7 +11,7 @@ export default class Dashboard extends React.Component {
             <div>
                 <Navbar>
                     <Navbar.Group align={Alignment.LEFT}>
-                        <Navbar.Heading>Contact Tracing</Navbar.Heading>
+                        <Navbar.Heading>COVID19 Contact Tracing</Navbar.Heading>
                         <Navbar.Divider/>
                     </Navbar.Group>
                 </Navbar>

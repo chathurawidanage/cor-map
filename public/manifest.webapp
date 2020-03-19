@@ -1,7 +1,7 @@
 {
     "version": "0.1",
-    "name": "COVID LK Dashboard",
-    "description": "COVID LK Dashboard",
+    "name": "COVID LK Contact Tracing",
+    "description": "COVID LK Contact Tracing",
     "launch_path": "index.html",
     "icons": {
         "16": "dashboard.png",
@@ -9,8 +9,8 @@
         "128": "dashboard.png"
     },
     "developer": {
-        "name": "HISP",
-        "url": "http://dhis2.org"
+        "name": "Chathura Widanage",
+        "url": ""
     },
     "default_locale": "en",
     "activities": {

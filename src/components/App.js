@@ -15,17 +15,31 @@ import Loader from "./loader/Loader";
 import TEIDrawer from "./TEIDrawer";
 import * as Utils from "../Utils";
 import {REL_CASE_TO_SUSPECT} from "../DHIS2Constants";
-
-const CASE = 1;
-const SUSPECT = 2;
+import Legend from "./Legend";
 
 const options = {
-    layout: {},
+    layout: {
+        // improvedLayout: true,
+        // "hierarchical": {
+        //     "enabled": true,
+        //     "sortMethod": "directed",
+        //     "direction": "LR",
+        //     nodeSpacing: 200,
+        //     levelSeparation: 200
+        // }
+    },
     edges: {
-        color: "#000000"
+        color: "#000000",
+        // smooth: {enabled: true, type: 'straightCross'}
     },
     nodes: {
         imagePadding: 5
+    },
+    physics: {
+        solver: "barnesHut",
+        barnesHut: {
+            avoidOverlap: 1
+        }
     },
     autoResize: true,
     height: (window.innerHeight - 50) + "px",
@@ -70,10 +84,6 @@ export default class App extends React.Component {
             }
         };
     }
-
-    openTracker = (tei) => {
-        window.open(`${DHIS2_ENDPOINT}/dhis-web-tracker-capture/index.html#/dashboard?tei=${tei}&program=Cr6bmkKzQ5c&ou=GYBZ1og9bk7`, '_blank');
-    };
 
     setLoading = (loading) => {
         this.setState({
@@ -215,7 +225,7 @@ export default class App extends React.Component {
         });
     }
 
-    updateVisualization = () => {
+    updateCaseTrackingVisualization = () => {
         this.setLoading(true);
         let nodes = [];
         let edges = [];
@@ -285,68 +295,8 @@ export default class App extends React.Component {
 
             this.setState({
                 teiDB
-            }, this.updateVisualization);
+            }, this.updateCaseTrackingVisualization);
         });
-
-        // TEIService.getTEIs(DHIS2Costants.PROGRAM_ID_CASE).then(data => {
-        //     console.log(data);
-        //     let teis = data && data.data && data.data.trackedEntityInstances;
-        //     let teiToProgram = {};
-        //     let nodes = [];
-        //     let edges = [];
-        //     if (teis) {
-        //         teis.forEach(tei => {
-        //             //this.addInfected(nodes, tei.trackedEntityInstance);
-        //             teiToProgram[tei.trackedEntityInstance] = DHIS2Costants.PROGRAM_ID_CASE;
-        //
-        //             if (tei.relationships && tei.relationships.length > 0) {
-        //                 tei.relationships.forEach(rel => {
-        //                     if (rel.relationshipType === REL_CASE_TO_CASE) {
-        //                         this.addCaseToCaseLink(edges, rel.from.trackedEntityInstance.trackedEntityInstance,
-        //                             rel.to.trackedEntityInstance.trackedEntityInstance);
-        //                     } else {
-        //                         this.addLink(edges, rel.from.trackedEntityInstance.trackedEntityInstance,
-        //                             rel.to.trackedEntityInstance.trackedEntityInstance);
-        //                         teiToProgram[rel.to.trackedEntityInstance.trackedEntityInstance] = DHIS2Costants.PROGRAM_ID_SUSPECT;
-        //                     }
-        //                 });
-        //             }
-        //         });
-        //
-        //         // first add based on type
-        //         Object.keys(teiToProgram).forEach(teiId => {
-        //             if (teiToProgram[teiId] === DHIS2Costants.PROGRAM_ID_CASE) {
-        //                 this.addInfected(nodes, teiId);
-        //             } else {
-        //                 this.addSuspect(nodes, teiId);
-        //             }
-        //         });
-        //
-        //         // load other suspects
-        //         TEIService.getTEIs(DHIS2Costants.PROGRAM_ID_SUSPECT).then(data => {
-        //             let teis = data && data.data && data.data.trackedEntityInstances;
-        //             teis.forEach(tei => {
-        //                 if (!teiToProgram[tei.trackedEntityInstance]) {
-        //                     teiToProgram[tei.trackedEntityInstance] = DHIS2Costants.PROGRAM_ID_SUSPECT;
-        //                     this.addSuspect(nodes, tei.trackedEntityInstance);
-        //                 }
-        //             });
-        //
-        //             let count = edges.length;
-        //             edges = edges.filter(l => teiToProgram[l.from] && teiToProgram[l.to]);
-        //             console.log("Dropped", count - edges.length);
-        //             this.setState({
-        //                 graph: {nodes, edges},
-        //                 loading: false,
-        //                 teiToProgram
-        //             });
-        //         }).catch(err => {
-        //             console.log("Failed to load suspects");
-        //         });
-        //     } else {
-        //         console.error("Unknown response");
-        //     }
-        // }).catch(err => console.log(err));
     }
 
     render() {
@@ -362,10 +312,13 @@ export default class App extends React.Component {
                 {
                     this.state.loading ?
                         <Loader/> :
-                        <Graph
-                            graph={this.state.graph}
-                            options={options}
-                            events={this.events}/>
+                        <div>
+                            <Legend/>
+                            <Graph
+                                graph={this.state.graph}
+                                options={options}
+                                events={this.events}/>
+                        </div>
                 }
             </div>
         );
