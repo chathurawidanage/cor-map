@@ -1,38 +1,26 @@
 {
-  "name": "rel-react",
+  "name": "covid19-contact-tracing",
   "version": "0.1.0",
   "private": true,
-  "homepage": "./",
   "dependencies": {
     "@blueprintjs/core": "^3.24.0",
+    "@dhis2/app-runtime": "^2.1.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "axios": "^0.19.2",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
-    "react-graph-vis": "^1.0.5",
-    "react-scripts": "3.4.0"
+    "react-graph-vis": "^1.0.5"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "d2-app-scripts start",
+    "build": "d2-app-scripts build",
+    "test": "d2-app-scripts test"
   },
   "eslintConfig": {
     "extends": "react-app"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "devDependencies": {
+    "@dhis2/cli-app-scripts": "^3.2.6"
   }
 }

@@ -1,5 +1,3 @@
-export const DHIS2_ENDPOINT = "http://localhost:8010/proxy";
-//export const DHIS2_ENDPOINT = "../../..";
 export const PROGRAM_ID_CASE = "Vm064LR5gWs";
 export const PROGRAM_ID_SUSPECT = "tcU9SCAblLd";
 
