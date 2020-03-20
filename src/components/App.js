@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types'
 import Graph from "react-graph-vis";
 import * as DHIS2Costants from "../DHIS2Constants";
 import {

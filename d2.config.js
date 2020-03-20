@@ -1,6 +1,6 @@
 const config = {
-    name: 'contract-tracing',
-    title: 'Contact Tracing',
+    name: 'covid19-contract-tracing',
+    title: 'COVID19 Contact Tracing',
     type: 'app',
 
     entryPoints: {
