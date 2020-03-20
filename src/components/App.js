@@ -1,10 +1,8 @@
 import React from 'react';
-import './App.css';
+import PropTypes from 'prop-types'
 import Graph from "react-graph-vis";
-import TEIService from "../services/TEIService";
 import * as DHIS2Costants from "../DHIS2Constants";
 import {
-    DHIS2_ENDPOINT,
     GENDER_FEMALE,
     GENDER_MALE,
     PROGRAM_ID_CASE,
@@ -16,6 +14,7 @@ import TEIDrawer from "./TEIDrawer";
 import * as Utils from "../Utils";
 import {REL_CASE_TO_SUSPECT} from "../DHIS2Constants";
 import Legend from "./Legend";
+import { programTEIQuery } from '../queries/TEIQueries';
 
 const options = {
     layout: {
@@ -47,7 +46,7 @@ const options = {
 };
 
 
-export default class App extends React.Component {
+class App extends React.Component {
 
     constructor(props) {
         super(props);
@@ -262,36 +261,36 @@ export default class App extends React.Component {
     componentDidMount() {
         //this.populateSampleData();
 
-        let attributeToFetch = [DHIS2Costants.ATTR_DOB, DHIS2Costants.ATTR_GENDER, DHIS2Costants.ATTR_SN];
-
-        let programs = [PROGRAM_ID_CASE, PROGRAM_ID_SUSPECT];
-
-        let requests = [];
-        programs.forEach(program => {
-            requests.push(TEIService.getTEIs(program));
-            requests.push(TEIService.getTEIAttributes(program, attributeToFetch));
-        });
+        const attributesToFetch = [DHIS2Costants.ATTR_DOB, DHIS2Costants.ATTR_GENDER, DHIS2Costants.ATTR_SN];
+        const programs = [PROGRAM_ID_CASE, PROGRAM_ID_SUSPECT];
+        const requests = programs.map(program => (
+            this.props.engine.query(programTEIQuery, {
+                variables: {
+                    program,
+                    attributes: attributesToFetch
+                }
+            })
+        ));
 
         // load data
         Promise.all(requests).then(results => {
             let teiDB = this.state.teiDB;
 
-            // process TEI response
-            [0, 2].forEach(i => {
-                if (results[i].data && results[i].data.trackedEntityInstances) {
-                    this.processTEIResponse(teiDB, results[i].data.trackedEntityInstances, programs[i / 2]);
+            results.forEach((data, i) => {
+                const program = programs[i]
+                // process TEI response
+                if (data?.teis?.trackedEntityInstances) {
+                    this.processTEIResponse(teiDB, data.teis.trackedEntityInstances, program);
                 } else {
-                    console.warn("Nothing found for Case", i);
+                    console.warn("Nothing found for program", program);
                 }
-            });
 
-            [1, 3].forEach(i => {
-                if (results[i].data && results[i].data.rows) {
-                    this.processTEIAttributeResponse(teiDB, results[i].data.rows);
+                if (data?.attributes?.rows) {
+                    this.processTEIAttributeResponse(teiDB, data.attributes.rows);
                 } else {
-                    console.warn("No attributes found for Case", i);
+                    console.warn("No attributes found for program", program);
                 }
-            });
+            })
 
             this.setState({
                 teiDB
@@ -324,3 +323,11 @@ export default class App extends React.Component {
         );
     }
 }
+
+// App.propTypes = {
+//     engine: PropTypes.shape({
+//         query: PropTypes.func.isRequired
+//     }).isRequired
+// }
+
+export default App
