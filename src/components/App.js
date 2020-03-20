@@ -323,10 +323,4 @@ class App extends React.Component {
     }
 }
 
-// App.propTypes = {
-//     engine: PropTypes.shape({
-//         query: PropTypes.func.isRequired
-//     }).isRequired
-// }
-
 export default App
