@@ -1,7 +1,7 @@
 {
     "version": "0.1",
-    "name": "COVID LK Contact Tracing",
-    "description": "COVID LK Contact Tracing",
+    "name": "COVID Contact Tracing",
+    "description": "COVID Contact Tracing",
     "launch_path": "index.html",
     "icons": {
         "16": "dashboard.png",
