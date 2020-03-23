@@ -100,6 +100,30 @@ export default class LocationTrackerMap extends React.Component {
         });
     };
 
+    loadDateRanges = () => {
+        LocationQueries.getDateRange(this.props.match.params.msisdn).then(resp => {
+            if (resp?.data?.start_date && resp?.data?.end_date) {
+                let start = new Date(resp.data.start_date).getTime();
+                let end = new Date(resp.data.end_date).getTime();
+
+                let length = (end - start) / DAY_MILIS;
+
+                this.setState({
+                    availableDateRange: {
+                        availableStartDate: start,
+                        availableEndDate: end
+                    },
+                    selectedDateRange: {
+                        fromIndex: Math.max(length - 6, 0),
+                        toIndex: Math.max(length - 1, 0)
+                    },
+                }, this.fetchData);
+            }
+        }).catch(err => {
+            console.log("Failed to get the data range");
+        });
+    };
+
     repeatDataAvailabilityCheck() {
         this.setLoadingText("Checking for Availability");
         LocationQueries.fetchLocHistory(this.props.match.params.msisdn).then(resp => {
@@ -108,7 +132,7 @@ export default class LocationTrackerMap extends React.Component {
                 this.setState({
                     dataAvailable: true,
                     loadingTxt: "Querying for location data..."
-                }, this.fetchData);
+                }, this.loadDateRanges);
                 clearTimeout(this.dataAvailabilityInterval);
             } else {
                 this.setLoadingText("Data not available yet. We will retry in 10secs..");
@@ -123,27 +147,7 @@ export default class LocationTrackerMap extends React.Component {
 
     componentDidMount() {
         if (this.props.match?.params?.msisdn) {
-            LocationQueries.getDateRange(this.props.match.params.msisdn).then(resp => {
-                if (resp?.data?.start_date && resp?.data?.end_date) {
-                    let start = new Date(resp.data.start_date).getTime();
-                    let end = new Date(resp.data.end_date).getTime();
-
-                    let length = (end - start) / DAY_MILIS;
-
-                    this.setState({
-                        availableDateRange: {
-                            availableStartDate: start,
-                            availableEndDate: end
-                        },
-                        selectedDateRange: {
-                            fromIndex: Math.max(length - 6, 0),
-                            toIndex: Math.max(length - 1, 0)
-                        },
-                    }, this.repeatDataAvailabilityCheck);
-                }
-            }).catch(err => {
-                console.log("Failed to get the data range");
-            });
+            this.repeatDataAvailabilityCheck();
         } else {
             console.error("MSISDN not specified");
         }
@@ -308,7 +312,7 @@ export default class LocationTrackerMap extends React.Component {
                                 options={{
                                     disableDefaultUI: true
                                 }}
-                                bootstrapURLKeys={{key: "AIzaSyBnllJ3UdOMvv3S-1yAw4TNCi6iQYUOGjg"}}
+                                bootstrapURLKeys={{key: ""}}
                                 yesIWantToUseGoogleMapApiInternals
                                 defaultCenter={[7.8731, 80.7718]}
                                 defaultZoom={8}

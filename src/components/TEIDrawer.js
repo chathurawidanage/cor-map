@@ -11,12 +11,15 @@ import {Link, HashRouter as Router} from "react-router-dom";
 
 const TEIDrawer = ({te, onClose}) => {
     const {baseUrl} = useConfig();
+    console.log("config", useConfig());
     const {loading, error, data} = useDataQuery(trackedEntityInstanceQuery, {
         variables: te
     });
 
     const openInTracker = () => {
-        let url = `${baseUrl}dhis-web-tracker-capture/index.html#/dashboard?tei=${te.id}&program=${te.program}&ou=${data?.tei.orgUnit}`;
+        // let url = `${baseUrl}dhis-web-tracker-capture/index.html#/dashboard?tei=${te.id}&program=${te.program}&ou=${data?.tei.orgUnit}`;
+        // window.open(url, "_blank");
+        let url = "https://" + window.location.host + `/dhis-web-tracker-capture/index.html#/dashboard?tei=${te.id}&program=${te.program}&ou=${data?.tei.orgUnit}`;
         window.open(url, "_blank");
     };
 

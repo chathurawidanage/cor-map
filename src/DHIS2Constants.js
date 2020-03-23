@@ -1,7 +1,7 @@
 export const PROGRAM_ID_CASE = "Vm064LR5gWs";
 export const PROGRAM_ID_SUSPECT = "tcU9SCAblLd";
 
-export const ATTR_SN = "wX3FuQmiLGI"; // some kind of an ID, Serial Number, Case number
+export const ATTR_SN = "tPXTNGYwFwa"; // some kind of an ID, Serial Number, Case number
 export const ATTR_GENDER = "DDleOZ1LGAq";
 export const ATTR_DOB = "nvJtVaGKK4Q";
 export const ATTR_NO_OF_CONTACTS = "Ew78jFv6OxD";
