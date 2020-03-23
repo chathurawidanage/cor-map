@@ -1,0 +1,26 @@
+.date-slider {
+    position: fixed;
+    bottom: -10px;
+    width: 90%;
+    z-index: 99999;
+    left: 5%;
+    padding-left: 20px;
+}
+
+.bp3-slider-label {
+    width: 60px;
+    text-align: center;
+}
+
+.bp3-slider-label:first-of-type {
+    left: calc(0% + 20px) !important;
+}
+
+.bp3-slider-label:last-of-type {
+    left: calc(100% - 20px) !important;
+}
+
+.tracker-map {
+    width: 100%;
+    height: calc(100vh - 48px);
+}

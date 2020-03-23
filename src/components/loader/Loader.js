@@ -7,6 +7,11 @@ export default class Loader extends React.Component {
         return (
             <div className="loader-wrapper">
                 <ProgressBar/>
+                <div style={{paddingTop: 10, textAlign: "center"}}>
+                    {
+                        this.props.text ? <p>{this.props.text}</p> : <p></p>
+                    }
+                </div>
             </div>
         );
     }

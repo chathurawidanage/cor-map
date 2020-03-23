@@ -13,7 +13,9 @@ import TEIDrawer from "./TEIDrawer";
 import * as Utils from "../Utils";
 import {REL_CASE_TO_SUSPECT} from "../DHIS2Constants";
 import Legend from "./Legend";
-import { programTEIQuery } from '../queries/TEIQueries';
+import {programTEIQuery} from '../queries/TEIQueries';
+import {Dialog} from "@blueprintjs/core";
+import LocationTrackerMap from "./LocationTrackerMap";
 
 const options = {
     layout: {
@@ -212,7 +214,7 @@ class App extends React.Component {
                 }
 
                 if (row[8] !== "") {
-                    teiDB.attributes[row[0]].gender = row[9] === "Male" ? GENDER_MALE : GENDER_FEMALE;
+                    teiDB.attributes[row[0]].gender = row[8] === "Male" ? GENDER_MALE : GENDER_FEMALE;
                 }
 
                 if (row[9] !== "") {

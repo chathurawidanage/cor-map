@@ -16,9 +16,9 @@
 
 .info-header {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: auto auto;
 }
 
-.info-actions{
+.info-actions {
     text-align: right;
 }

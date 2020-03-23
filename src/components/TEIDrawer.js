@@ -1,12 +1,13 @@
 import React from "react";
 import {useDataQuery, useConfig} from '@dhis2/app-runtime';
-import {Button, Drawer, Tag} from "@blueprintjs/core";
+import {Button, ButtonGroup, Drawer, Tag} from "@blueprintjs/core";
 import Loader from "./loader/Loader";
 import "./TEIDrawer.css";
 import * as DHIS2Constants from "../DHIS2Constants";
 import {Intent} from "@blueprintjs/core/lib/cjs/common/intent";
 import {trackedEntityInstanceQuery} from "../queries/TEIQueries";
 import i18n from "i18next";
+import {Link, HashRouter as Router} from "react-router-dom";
 
 const TEIDrawer = ({te, onClose}) => {
     const {baseUrl} = useConfig();
@@ -43,7 +44,14 @@ const TEIDrawer = ({te, onClose}) => {
                                 <Tag intent={Intent.WARNING}>Suspect</Tag>}
                         </div>
                         <div className="info-actions">
-                            <Button text="Open in Tracker" onClick={openInTracker}/>
+                            <ButtonGroup>
+                                <Button text="Open in Tracker" onClick={openInTracker} small={true}/>
+                                <Router>
+                                    <Link to="/location">
+                                        <Button text="Trace Location" small={true}/>
+                                    </Link>
+                                </Router>
+                            </ButtonGroup>
                         </div>
                     </div>
                     <div>
