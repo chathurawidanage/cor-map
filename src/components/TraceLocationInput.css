@@ -2,5 +2,10 @@
     position: fixed;
     right: 10px;
     bottom: 10px;
-    width: 200px;
+    width: 400px;
+}
+
+.search-box h5{
+    margin: 0;
+    margin-bottom: 10px;
 }

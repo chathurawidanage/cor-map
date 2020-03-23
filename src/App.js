@@ -10,9 +10,7 @@ const ContactTracingApp = () => {
 
     let routes = <Router><Switch>
         <Route path="/location/:msisdn" component={(props) => <LocationTrackerMap {...props} engine={engine}/>}/>
-        <Route path="/" exact={true}>
-            <App engine={engine}/>
-        </Route>
+        <Route path="/" exact={true} component={(props) => <App {...props} engine={engine}/>}/>
     </Switch></Router>;
 
     return routes;

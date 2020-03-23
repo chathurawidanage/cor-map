@@ -16,7 +16,7 @@ export default class LocationTrackerMap extends React.Component {
         this.state = {
             dataAvailable: false,
             loading: true,
-            loadingTxt: false,
+            loadingTxt: "Tracing " + this.props.match.params.msisdn + "...",
             availableDateRange: {
                 availableStartDate: Date.now() - DAY_MILIS * 7,
                 availableEndDate: Date.now()
@@ -56,6 +56,7 @@ export default class LocationTrackerMap extends React.Component {
         this.polyLines = [];
 
         this.dataAvailabilityInterval = -1;
+        this.rangeChangedTimeout = -1;
     }
 
     setLoadingText = (text) => {
@@ -65,6 +66,9 @@ export default class LocationTrackerMap extends React.Component {
     };
 
     fetchData = () => {
+
+        console.log("Fetching data");
+
         let from = new Date((this.state.selectedDateRange.fromIndex * DAY_MILIS)
             + (this.state.availableDateRange.availableStartDate));
         let to = new Date((this.state.selectedDateRange.toIndex * DAY_MILIS)
@@ -119,7 +123,27 @@ export default class LocationTrackerMap extends React.Component {
 
     componentDidMount() {
         if (this.props.match?.params?.msisdn) {
-            this.repeatDataAvailabilityCheck();
+            LocationQueries.getDateRange(this.props.match.params.msisdn).then(resp => {
+                if (resp?.data?.start_date && resp?.data?.end_date) {
+                    let start = new Date(resp.data.start_date).getTime();
+                    let end = new Date(resp.data.end_date).getTime();
+
+                    let length = (end - start) / DAY_MILIS;
+
+                    this.setState({
+                        availableDateRange: {
+                            availableStartDate: start,
+                            availableEndDate: end
+                        },
+                        selectedDateRange: {
+                            fromIndex: Math.max(length - 6, 0),
+                            toIndex: Math.max(length - 1, 0)
+                        },
+                    }, this.repeatDataAvailabilityCheck);
+                }
+            }).catch(err => {
+                console.log("Failed to get the data range");
+            });
         } else {
             console.error("MSISDN not specified");
         }
@@ -135,7 +159,7 @@ export default class LocationTrackerMap extends React.Component {
             return;
         }
 
-        console.log("Drawing markers", filteredDates, this.state.locations);
+        console.log("Drawing markers...");
 
         let markersToDel = {...this.markers};
 
@@ -162,7 +186,6 @@ export default class LocationTrackerMap extends React.Component {
                 fillColor: '#AA0000'
             });
             circle.bindTo('center', marker, 'position');
-            console.log("Adding marker");
             this.markers[loc.lat + "_" + loc.lon] = [marker, circle];
         });
 
@@ -174,12 +197,16 @@ export default class LocationTrackerMap extends React.Component {
         });
 
         // zoom appropriately
-        if (Object.values(markersToDel).length > 0) {
-            let latlngbounds = new window.google.maps.LatLngBounds();
-            Object.values(this.markers).forEach(marker => {
-                latlngbounds.extend(marker);
-            });
-            this.map.fitBounds(latlngbounds);
+        try {
+            if (Object.keys(this.markers).length > 0) {
+                let latlngbounds = new window.google.maps.LatLngBounds();
+                Object.values(this.markers).forEach(marker => {
+                    latlngbounds.extend(marker[0].position);
+                });
+                this.map.fitBounds(latlngbounds);
+            }
+        } catch (e) { // just for demo try catch
+            console.error("Error in centering");
         }
 
         // let sortedLocations = filteredDates
@@ -219,11 +246,29 @@ export default class LocationTrackerMap extends React.Component {
         // }
     };
 
+    getBeginningOfDay = (time) => {
+        return time - (time % DAY_MILIS);
+    };
+
     getDateLabel = (time) => {
         return `${MONTHS[time.getMonth()]} ${time.getDate()}`;
     };
 
+    onRangeChanged = (range) => {
+        this.setState({
+            selectedDateRange: {
+                fromIndex: range[0],
+                toIndex: range[1]
+            }
+        }, () => {
+            clearTimeout(this.rangeChangedTimeout);
+            this.rangeChangedTimeout = setTimeout(this.fetchData, 2000);
+        });
+    };
+
     render() {
+
+        console.log("rendering");
 
         let ticks = (this.state.availableDateRange.availableEndDate
             - this.state.availableDateRange.availableStartDate) / DAY_MILIS;
@@ -234,11 +279,8 @@ export default class LocationTrackerMap extends React.Component {
             + this.state.selectedDateRange.toIndex * DAY_MILIS;
 
         let filteredDates = this.state.locations.filter(loc => {
-            console.log(loc.from >= selectedStartDate, loc.to <= selectedEndDate);
             return loc.from >= selectedStartDate && loc.to <= selectedEndDate;
         });
-
-        console.log("FIletered", JSON.stringify(filteredDates));
 
         this.redrawMarkers(filteredDates);
 
@@ -252,16 +294,11 @@ export default class LocationTrackerMap extends React.Component {
                                 <RangeSlider min={0} max={ticks}
                                              value={[this.state.selectedDateRange.fromIndex,
                                                  this.state.selectedDateRange.toIndex]}
-                                             onChange={(range) => {
-                                                 this.setState({
-                                                     selectedDateRange: {
-                                                         fromIndex: range[0],
-                                                         toIndex: range[1]
-                                                     }
-                                                 })
-                                             }}
+                                             onChange={this.onRangeChanged}
                                              labelRenderer={(tick) => {
-                                                 let time = new Date(this.state.availableDateRange.availableStartDate + (tick * DAY_MILIS));
+                                                 let time = new Date(
+                                                     this.getBeginningOfDay(this.state.availableDateRange.availableStartDate + (tick * DAY_MILIS))
+                                                 );
                                                  return this.getDateLabel(time);
                                              }}/>
                             </Card>
@@ -271,7 +308,7 @@ export default class LocationTrackerMap extends React.Component {
                                 options={{
                                     disableDefaultUI: true
                                 }}
-                                bootstrapURLKeys={{key: ""}}
+                                bootstrapURLKeys={{key: "AIzaSyBnllJ3UdOMvv3S-1yAw4TNCi6iQYUOGjg"}}
                                 yesIWantToUseGoogleMapApiInternals
                                 defaultCenter={[7.8731, 80.7718]}
                                 defaultZoom={8}

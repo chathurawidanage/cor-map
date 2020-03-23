@@ -221,6 +221,12 @@ class App extends React.Component {
                 if (row[9] !== "") {
                     teiDB.attributes[row[0]].id = row[9];
                 }
+
+                if (row[10] !== "") {
+                    teiDB.attributes[row[0]].contacts = row[10];
+                } else {
+                    teiDB.attributes[row[0]].contacts = "0";
+                }
                 console.log()
             }
         });
@@ -235,7 +241,7 @@ class App extends React.Component {
 
         this.state.teiDB.program[PROGRAM_ID_CASE].forEach(cs => {
             this.addInfected(nodes, cs,
-                this.state.teiDB.attributes[cs].id + ` [${this.state.teiDB.attributes[cs].age} yrs]`,
+                this.state.teiDB.attributes[cs].id + ` [${this.state.teiDB.attributes[cs].contacts} contacts]`,
                 Utils.getImgForGender(this.state.teiDB.attributes[cs].gender)
             );
         });
@@ -263,7 +269,8 @@ class App extends React.Component {
     componentDidMount() {
         //this.populateSampleData();
 
-        const attributesToFetch = [DHIS2Costants.ATTR_DOB, DHIS2Costants.ATTR_GENDER, DHIS2Costants.ATTR_SN];
+        const attributesToFetch = [DHIS2Costants.ATTR_DOB, DHIS2Costants.ATTR_GENDER,
+            DHIS2Costants.ATTR_SN, DHIS2Costants.ATTR_NO_OF_CONTACTS];
         const programs = [PROGRAM_ID_CASE, PROGRAM_ID_SUSPECT];
         const requests = programs.map(program => (
             this.props.engine.query(programTEIQuery, {
@@ -292,7 +299,7 @@ class App extends React.Component {
                 } else {
                     console.warn("No attributes found for program", program);
                 }
-            })
+            });
 
             this.setState({
                 teiDB
@@ -301,6 +308,9 @@ class App extends React.Component {
     }
 
     render() {
+
+        console.log(this.props.history, "his");
+
         return (
             <div className="App">
                 {
@@ -319,7 +329,7 @@ class App extends React.Component {
                                 graph={this.state.graph}
                                 options={options}
                                 events={this.events}/>
-                            <TraceLocationInput/>
+                            <TraceLocationInput {...this.props}/>
                         </div>
                 }
             </div>

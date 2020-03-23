@@ -47,7 +47,7 @@ const TEIDrawer = ({te, onClose}) => {
                             <ButtonGroup>
                                 <Button text="Open in Tracker" onClick={openInTracker} small={true}/>
                                 <Router>
-                                    <Link to="/location">
+                                    <Link to="/location/94777332156" target="_blank">
                                         <Button text="Trace Location" small={true}/>
                                     </Link>
                                 </Router>
