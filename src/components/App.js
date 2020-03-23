@@ -16,6 +16,7 @@ import Legend from "./Legend";
 import {programTEIQuery} from '../queries/TEIQueries';
 import {Dialog} from "@blueprintjs/core";
 import LocationTrackerMap from "./LocationTrackerMap";
+import TraceLocationInput from "./TraceLocationInput";
 
 const options = {
     layout: {
@@ -318,6 +319,7 @@ class App extends React.Component {
                                 graph={this.state.graph}
                                 options={options}
                                 events={this.events}/>
+                            <TraceLocationInput/>
                         </div>
                 }
             </div>

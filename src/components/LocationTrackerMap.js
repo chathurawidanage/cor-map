@@ -271,7 +271,7 @@ export default class LocationTrackerMap extends React.Component {
                                 options={{
                                     disableDefaultUI: true
                                 }}
-                                bootstrapURLKeys={{key: "AIzaSyAXAmrRCdEYIYnxcMAEHDfTbNH0-Iyyv6g"}}
+                                bootstrapURLKeys={{key: ""}}
                                 yesIWantToUseGoogleMapApiInternals
                                 defaultCenter={[7.8731, 80.7718]}
                                 defaultZoom={8}
