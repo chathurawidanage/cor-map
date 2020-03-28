@@ -8,6 +8,7 @@ import {Intent} from "@blueprintjs/core/lib/cjs/common/intent";
 import {trackedEntityInstanceQuery} from "../queries/TEIQueries";
 import i18n from "i18next";
 import {Link, HashRouter as Router} from "react-router-dom";
+import {ATTR_PHONE} from "../DHIS2Constants";
 
 const TEIDrawer = ({te, onClose}) => {
     const {baseUrl} = useConfig();
@@ -23,7 +24,14 @@ const TEIDrawer = ({te, onClose}) => {
         window.open(url, "_blank");
     };
 
+    let phone = undefined;
+
     let att = data?.tei.attributes.map(att => {
+
+        if (att.attribute === ATTR_PHONE) {
+            phone = att.value;
+        }
+
         return (
             <div key={att.attribute}>
                 <h4 className="info-title">{att.displayName}</h4>
@@ -31,6 +39,13 @@ const TEIDrawer = ({te, onClose}) => {
             </div>
         );
     });
+
+    // try to format the phone number
+    if (phone && phone.startsWith("0")) {
+        phone = "94" + phone.substring(1);
+    }
+
+    let validPhone = phone && /94[0-9]{9}/.test(phone);
 
     return (
         <div>
@@ -49,11 +64,13 @@ const TEIDrawer = ({te, onClose}) => {
                         <div className="info-actions">
                             <ButtonGroup>
                                 <Button text="Open in Tracker" onClick={openInTracker} small={true}/>
-                                <Router>
-                                    <Link to="/location/94777332156" target="_blank">
-                                        <Button text="Trace Location" small={true}/>
-                                    </Link>
-                                </Router>
+                                {validPhone ?
+                                    <Router>
+                                        <Link to={"/location/" + phone} target="_blank">
+                                            <Button text="Trace Location" small={true}/>
+                                        </Link>
+                                    </Router>
+                                    : null}
                             </ButtonGroup>
                         </div>
                     </div>

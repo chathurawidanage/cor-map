@@ -3,4 +3,11 @@
     top: 50%;
     left: 37.5%;
     width: 25%;
+    padding: 10px;
+    background-color: white;
+    border-radius: 5px;
+}
+
+.loader-wrapper p {
+    margin-bottom: 0;
 }

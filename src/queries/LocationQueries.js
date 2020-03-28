@@ -1,7 +1,7 @@
 import axios from "axios";
 
-
-const BASE_URL = "https://cors-anywhere.herokuapp.com/http://198.154.99.128:8081/mobloc/";
+//const BASE_URL = window.location.protocol + "//" + window.location.host + "/mobloc/";
+const BASE_URL = "https://covid-19.health.gov.lk/mobloc/";
 
 export class LocationQueries {
 

@@ -16,6 +16,7 @@ export default class LocationTrackerMap extends React.Component {
         this.state = {
             dataAvailable: false,
             loading: true,
+            rangeLoading: false,
             loadingTxt: "Tracing " + this.props.match.params.msisdn + "...",
             availableDateRange: {
                 availableStartDate: Date.now() - DAY_MILIS * 7,
@@ -25,35 +26,15 @@ export default class LocationTrackerMap extends React.Component {
                 fromIndex: 0,
                 toIndex: 6
             },
-            locations: [
-                // {
-                //     from: new Date("2020-03-16 03:29:08").getTime(),
-                //     to: new Date("2020-03-17 16:19:35").getTime(),
-                //     lat: 6.9172219999999998,
-                //     lon: 79.859170000000006,
-                //     accuracy: 300
-                // },
-                // {
-                //     from: new Date("2020-03-20 08:49:39").getTime(),
-                //     to: new Date("2020-03-21 08:49:39").getTime(),
-                //     lat: 6.95,
-                //     lon: 79.859170000000006,
-                //     accuracy: 500
-                // },
-                // {
-                //     from: new Date("2020-03-16 08:49:39").getTime(),
-                //     to: new Date("2020-03-16 09:49:39").getTime(),
-                //     lat: 6.93,
-                //     lon: 79.839170000000006,
-                //     accuracy: 500
-                // }
-            ]
+            downloadedDateRange: {
+                fromIndex: 0,
+                toIndex: 6
+            },
+            locations: []
         };
 
         this.map = undefined;
         this.markers = {};
-        this.polyString = "";
-        this.polyLines = [];
 
         this.dataAvailabilityInterval = -1;
         this.rangeChangedTimeout = -1;
@@ -69,9 +50,19 @@ export default class LocationTrackerMap extends React.Component {
 
         console.log("Fetching data");
 
-        let from = new Date((this.state.selectedDateRange.fromIndex * DAY_MILIS)
+        if (!this.state.loading) {
+            this.setState({
+                rangeLoading: true,
+                loadingTxt: "Downloading data..."
+            });
+        }
+
+        let fromIndex = this.state.selectedDateRange.fromIndex;
+        let toIndex = this.state.selectedDateRange.toIndex;
+
+        let from = new Date((fromIndex * DAY_MILIS)
             + (this.state.availableDateRange.availableStartDate));
-        let to = new Date((this.state.selectedDateRange.toIndex * DAY_MILIS)
+        let to = new Date((toIndex * DAY_MILIS)
             + (this.state.availableDateRange.availableStartDate));
 
         let fromStr = moment(from).format('MM/DD/YYYY');
@@ -90,7 +81,12 @@ export default class LocationTrackerMap extends React.Component {
                 });
                 this.setState({
                     locations,
-                    loading: false
+                    loading: false,
+                    rangeLoading: false,
+                    downloadedDateRange: {
+                        fromIndex,
+                        toIndex
+                    },
                 });
             } else {
                 console.log("Received an unknown data format");
@@ -205,12 +201,13 @@ export default class LocationTrackerMap extends React.Component {
             if (Object.keys(this.markers).length > 0) {
                 let latlngbounds = new window.google.maps.LatLngBounds();
                 Object.values(this.markers).forEach(marker => {
-                    latlngbounds.extend(marker[0].position);
+                    latlngbounds.union(marker[1].getBounds());
+                    //latlngbounds.extend(marker[0].position);
                 });
-                this.map.fitBounds(latlngbounds);
+                this.map.fitBounds(latlngbounds, 50);
             }
         } catch (e) { // just for demo try catch
-            console.error("Error in centering");
+            console.error("Error in centering", e);
         }
 
         // let sortedLocations = filteredDates
@@ -259,6 +256,16 @@ export default class LocationTrackerMap extends React.Component {
     };
 
     onRangeChanged = (range) => {
+        //if the new range is within the current range, we don't need to download data
+        let newFrom = range[0];
+        let newTo = range[1];
+
+        let shouldLoadData = true;
+
+        if (newFrom >= this.state.downloadedDateRange.fromIndex && newTo <= this.state.downloadedDateRange.toIndex) {
+            shouldLoadData = false;
+        }
+
         this.setState({
             selectedDateRange: {
                 fromIndex: range[0],
@@ -266,7 +273,9 @@ export default class LocationTrackerMap extends React.Component {
             }
         }, () => {
             clearTimeout(this.rangeChangedTimeout);
-            this.rangeChangedTimeout = setTimeout(this.fetchData, 2000);
+            if (shouldLoadData) {
+                this.rangeChangedTimeout = setTimeout(this.fetchData, 2000);
+            }
         });
     };
 
@@ -299,6 +308,7 @@ export default class LocationTrackerMap extends React.Component {
                                              value={[this.state.selectedDateRange.fromIndex,
                                                  this.state.selectedDateRange.toIndex]}
                                              onChange={this.onRangeChanged}
+                                             disabled={this.state.rangeLoading}
                                              labelRenderer={(tick) => {
                                                  let time = new Date(
                                                      this.getBeginningOfDay(this.state.availableDateRange.availableStartDate + (tick * DAY_MILIS))
@@ -310,7 +320,8 @@ export default class LocationTrackerMap extends React.Component {
                         <div className="tracker-map">
                             <GoogleMapReact
                                 options={{
-                                    disableDefaultUI: true
+                                    disableDefaultUI: true,
+                                    zoomControl: true
                                 }}
                                 bootstrapURLKeys={{key: ""}}
                                 yesIWantToUseGoogleMapApiInternals
@@ -320,7 +331,11 @@ export default class LocationTrackerMap extends React.Component {
                                 onGoogleApiLoaded={({map, maps}) => {
                                     this.map = map;
                                     this.redrawMarkers(filteredDates);
-                                }}/></div>
+                                }}/>
+                        </div>
+                        {
+                            this.state.rangeLoading ? <Loader text={this.state.loadingTxt}/> : null
+                        }
                     </div>
                 }
             </div>
