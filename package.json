@@ -5,6 +5,7 @@
   "dependencies": {
     "@blueprintjs/core": "^3.24.0",
     "@dhis2/app-runtime": "^2.1.0",
+    "@dhis2/ui-core": "^4.16.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",

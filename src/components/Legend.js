@@ -1,5 +1,5 @@
 import React from "react";
-import {Card} from "@blueprintjs/core";
+import {Card} from "@dhis2/ui-core";
 import "./legend.css";
 
 export default class Legend extends React.Component {

@@ -1,14 +1,26 @@
 export const trackedEntityInstanceQuery = {
     tei: {
         resource: 'trackedEntityInstances',
-        id: ({ id }) => id
+        id: ({id}) => id
     }
-}
+};
+
+
+export const relationshipTypes = {
+        rts: {
+            resource: "relationshipTypes",
+            params: () => ({
+                paging: 'false',
+                fields: ["id", "name", "description", "toConstraint", "fromConstraint"]
+            })
+        }
+    }
+;
 
 export const programTEIQuery = {
     teis: {
         resource: 'trackedEntityInstances',
-        params: ({ program }) => ({
+        params: ({program}) => ({
             ouMode: 'ACCESSIBLE',
             fields: ['trackedEntityInstance', 'relationships[relationshipType,from[trackedEntityInstance[trackedEntityInstance]],to[trackedEntityInstance[trackedEntityInstance]]]'],
             paging: 'false',
@@ -18,7 +30,7 @@ export const programTEIQuery = {
     },
     attributes: {
         resource: 'trackedEntityInstances/query',
-        params: ({ program, attributes }) => ({
+        params: ({program, attributes}) => ({
             ouMode: 'ACCESSIBLE',
             skipMeta: 'true',
             skipPaging: 'true',
@@ -27,4 +39,4 @@ export const programTEIQuery = {
             attribute: [...attributes]
         })
     }
-}
+};

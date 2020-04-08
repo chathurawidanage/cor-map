@@ -15,7 +15,7 @@ const TEIDrawer = ({te, onClose}) => {
     });
 
     const openInTracker = () => {
-        let url = `${baseUrl}dhis-web-tracker-capture/index.html#/dashboard?tei=${te.id}&program=${te.program}&ou=${data?.tei.orgUnit}`;
+        let url = `${baseUrl}/dhis-web-tracker-capture/index.html#/dashboard?tei=${te.id}&program=${te.program}&ou=${data?.tei.orgUnit}`;
         window.open(url, "_blank");
     };
 
@@ -54,6 +54,6 @@ const TEIDrawer = ({te, onClose}) => {
             </Drawer>
         </div>
     );
-}
+};
 
 export default TEIDrawer

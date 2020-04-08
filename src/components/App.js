@@ -13,7 +13,8 @@ import TEIDrawer from "./TEIDrawer";
 import * as Utils from "../Utils";
 import {REL_CASE_TO_SUSPECT} from "../DHIS2Constants";
 import Legend from "./Legend";
-import { programTEIQuery } from '../queries/TEIQueries';
+import {programTEIQuery} from '../queries/TEIQueries';
+import Configuration from "./Configuration";
 
 const options = {
     layout: {
@@ -300,6 +301,7 @@ class App extends React.Component {
     render() {
         return (
             <div className="App">
+                <Configuration/>
                 {
                     this.state.selectedTei ? <TEIDrawer te={this.state.selectedTei} onClose={() => {
                         this.setState({

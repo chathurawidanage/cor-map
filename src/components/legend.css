@@ -5,8 +5,9 @@
 }
 
 .legend-card {
-    display: grid;
-    grid-row-gap: 5px;
+    display: grid !important;
+    grid-row-gap: 10px;
+    padding: 10px;
 }
 
 .leg-item {
