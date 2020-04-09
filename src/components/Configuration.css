@@ -1,0 +1,24 @@
+.config-wrapper {
+    padding: 10px;
+}
+
+.config-te-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.te-node-preview {
+    width: 60px;
+    height: 60px;
+    border-radius: 500px;
+    text-align: center;
+    margin: auto;
+    margin-bottom: 20px;
+    border: 1px solid #4e8ecc;
+    padding: 10px;
+}
+
+.te-card {
+    text-align: center;
+    padding: 10px;
+}

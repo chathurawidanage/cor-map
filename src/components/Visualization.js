@@ -46,7 +46,7 @@ const options = {
 };
 
 
-class App extends React.Component {
+export default class Visualization extends React.Component {
 
     constructor(props) {
         super(props);
@@ -301,7 +301,6 @@ class App extends React.Component {
     render() {
         return (
             <div className="App">
-                <Configuration/>
                 {
                     this.state.selectedTei ? <TEIDrawer te={this.state.selectedTei} onClose={() => {
                         this.setState({
@@ -324,5 +323,3 @@ class App extends React.Component {
         );
     }
 }
-
-export default App

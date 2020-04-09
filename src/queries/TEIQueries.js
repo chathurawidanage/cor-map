@@ -7,15 +7,26 @@ export const trackedEntityInstanceQuery = {
 
 
 export const relationshipTypes = {
-        rts: {
-            resource: "relationshipTypes",
+    rts: {
+        resource: "relationshipTypes",
+        params: () => ({
+            paging: 'false',
+            fields: ["id", "name", "description", "toConstraint", "fromConstraint"]
+        })
+    }
+};
+
+export const trackedEntityType = (te) => {
+    return {
+        tes: {
+            resource: `trackedEntityTypes/${te}`,
             params: () => ({
-                paging: 'false',
-                fields: ["id", "name", "description", "toConstraint", "fromConstraint"]
+                paging: false,
+                fields: ["id", "displayName", "trackedEntityTypeAttributes[id,displayName]"]
             })
         }
     }
-;
+};
 
 export const programTEIQuery = {
     teis: {
