@@ -11,7 +11,9 @@ const ContactTracingApp = () => {
     return <HashRouter>
         <Switch>
             <Route path="/" exact={true} component={Main}/>
-            <Route path="/configure" exact={true} component={Configuration} engine={engine}/>
+            <Route path="/configure" exact={true} component={(props) => {
+                return <Configuration engine={engine} {...props}/>
+            }} engine={engine}/>
             <Route path="/visualize" component={(props) => {
                 return <Visualization engine={engine} {...props}/>
             }}/>

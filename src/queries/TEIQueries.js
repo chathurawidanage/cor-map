@@ -16,6 +16,16 @@ export const relationshipTypes = {
     }
 };
 
+export const trackedEntityTypes = {
+    tes: {
+        resource: `trackedEntityTypes`,
+        params: () => ({
+            paging: "false",
+            fields: ["id", "displayName", "trackedEntityTypeAttributes[id,displayName]"]
+        })
+    }
+};
+
 export const trackedEntityType = (te) => {
     return {
         tes: {
