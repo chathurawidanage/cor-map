@@ -2,7 +2,7 @@ import { EventEmitter } from "../utils/EventEmitter"
 
 export type DataStoreResource = 'dataStore' | 'userDataStore'
 
-const joinPath = (...parts) => 
+const joinPath = (...parts: Array<string>) => 
     parts.map(part => 
         part
             .replace(/^\/+/, '')
@@ -18,7 +18,7 @@ export type BaseSettingsStoreInput = {
 }
 
 export class SettingsStore {
-    engine
+    engine: any
     resource: DataStoreResource
     dataStoreId: string
     settings: any
@@ -77,10 +77,10 @@ export class SettingsStore {
         this.eventEmitter.emit('change', this.settings)
     }
     
-    get(key) {
+    get(key: string) {
         return this.settings[key]
     }
-    async set(key, value) {
+    async set(key: string, value: any) {
         const prevSettings = this.settings
         const newSettings = {
             ...this.settings,
@@ -110,7 +110,7 @@ export class SettingsStore {
         }
     }
 
-    subscribe(key, callback) {
+    subscribe(key: string, callback: Function) {
         if (arguments.length === 1) {
             callback = arguments[0]
             this.eventEmitter.on('change', callback)
@@ -119,7 +119,7 @@ export class SettingsStore {
         }
     }
 
-    unsubscribe(key, callback) {
+    unsubscribe(key: string, callback: Function) {
         if (arguments.length === 1) {
             callback = arguments[0]
             this.eventEmitter.off('change', callback)

@@ -1,13 +1,20 @@
 import { SavedObjectStore } from "./SavedObjectStore";
 import { SettingsStore } from "./SettingsStore";
 
+type DataStoreInput = {
+    engine: any,
+    namespace: string,
+    defaultGlobalSettings?: object
+    defaultUserSettings?: object
+}
+
 export class DataStore {
     globalSettings: SettingsStore
     userSettings: SettingsStore
     userSavedObjects: SavedObjectStore
     globalSavedObjects: SavedObjectStore
 
-    constructor({ engine, namespace, defaultGlobalSettings, defaultUserSettings }) {
+    constructor({ engine, namespace, defaultGlobalSettings, defaultUserSettings }: DataStoreInput) {
         this.globalSettings = new SettingsStore({
             engine,
             resource: 'dataStore',
@@ -46,7 +53,7 @@ export class DataStore {
         ])
     }
 
-    async shareSavedObject(id) {
+    async shareSavedObject(id: string) {
         if (this.userSavedObjects.has(id)) {
             // TODO: Handle errors
             await this.globalSavedObjects.update(id, this.userSavedObjects.get(id))
@@ -54,7 +61,7 @@ export class DataStore {
         }
     }
 
-    async unshareSavedObject(id) {
+    async unshareSavedObject(id: string) {
         if (this.globalSavedObjects.has(id)) {
             // TODO: Handle errors
             await this.userSavedObjects.update(id, this.globalSavedObjects.get(id))

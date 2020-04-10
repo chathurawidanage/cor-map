@@ -2,7 +2,7 @@ import uuid from "uuid4";
 import { SettingsStore, DataStoreResource } from "./SettingsStore";
 
 type SavedObjectStoreInput = {
-    engine,
+    engine: any,
     resource: DataStoreResource,
     namespace: string,
     item: string
@@ -12,11 +12,11 @@ export class SavedObjectStore extends SettingsStore {
         super({ engine, resource, namespace, item, defaults: {} })
     }
 
-    has(id) {
+    has(id: string) {
         return Object.keys(this.settings).includes(id)
     }
 
-    async add(object) {
+    async add(object: object) {
         if (typeof object !== 'object') {
             throw new Error(`Only objects are allowed in the SavedObjectStore, received ${object}`)
         }
@@ -31,18 +31,18 @@ export class SavedObjectStore extends SettingsStore {
 
         return newObject
     }
-    async update(id, object) {
-        const objectToAdd = typeof object === 'object' ? {
+    async update(id: string, object: object) {
+        const objectToAdd = {
             ...this.get(id),
             ...object
-        } : object
+        }
         await this.set(id, objectToAdd)
         return objectToAdd
     }
-    async replace(id, object) {
+    async replace(id: string, object: object) {
         await this.set(id, object)
     }
-    async remove(id) {
+    async remove(id: string) {
         await this.set(id, undefined) // TODO: Soft delete
     }
 }
