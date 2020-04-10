@@ -53,3 +53,11 @@
 .relationship-preview .te-node-preview {
     margin: 0 !important;
 }
+
+.config-buttons {
+    margin-top: 10px;
+}
+
+.config-bottons > button {
+    margin-right: 10px;
+}

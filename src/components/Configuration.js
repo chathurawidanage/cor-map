@@ -240,7 +240,7 @@ export default class Configurations extends React.Component {
             meta: {},
             name: "Cases to Suspects",
             relationshipTemplates: {},
-            id: uuid()
+            ...props.visualization
         }
     }
 
@@ -283,7 +283,7 @@ export default class Configurations extends React.Component {
     };
 
     createNewTETemplate = () => {
-        let id = uuid();
+        let id = uuid(); // TODO: Probably doesn't need to be a uuid?
         this.setState({
             teTemplates: {
                 ...this.state.teTemplates, [id]: generateTETemplateConfig(id, this.state.selectedTEs[0])
@@ -374,14 +374,17 @@ export default class Configurations extends React.Component {
                         </div>
                         : null
                 }
-                {
-                    Object.values(this.state.relationshipTemplates).length > 0
-                    && Object.values(this.state.relationshipTemplates).map(rt => rt.from && rt.to).filter(valid => !valid).length === 0 &&
-                    <div>
-                        <h3>Step 5</h3>
-                        <Button primary={true}>Save</Button>
-                    </div>
-                }
+                <div className="config-buttons">
+                    {
+                        Object.values(this.state.relationshipTemplates).length > 0
+                        && Object.values(this.state.relationshipTemplates).map(rt => rt.from && rt.to).filter(valid => !valid).length === 0 &&
+                        <>
+                            <h3>Step 5</h3>
+                            <Button primary={true} onClick={() => this.props.onSave(this.state)}>Save</Button>
+                        </>
+                    }
+                    <Button onClick={() => this.props.onCancel()}>Cancel</Button>
+                </div>
             </div>
         )
     }
