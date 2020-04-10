@@ -42,6 +42,14 @@ export class SettingsStore {
         await this.refresh()
     }
 
+    async create() {
+        await this.engine.mutate({
+            resource: `${this.resource}/${this.dataStoreId}`,
+            type: 'create',
+            data: this.settings
+        })
+    }
+
     async refresh() {
         const prevSettings = this.settings;
         try {
@@ -54,7 +62,11 @@ export class SettingsStore {
     
             this.settings = newSettings.settings
         } catch (e) {
-            // Ignore all errors, for now
+            if (e.details?.status === 404) {
+                await this.create()
+            } else {
+                throw e;
+            }
         }
 
         Object.keys(prevSettings).forEach(key => {
@@ -69,22 +81,28 @@ export class SettingsStore {
         return this.settings[key]
     }
     async set(key, value) {
+        const prevSettings = this.settings
         const newSettings = {
             ...this.settings,
             [key]: value
         }
+        if (typeof value === 'undefined') {
+            delete newSettings[key]
+        }
+
+        this.settings = newSettings
         this.eventEmitter.emit(`change ${key}`, value)
-        this.eventEmitter.emit('change', newSettings)
+        this.eventEmitter.emit('change', this.settings)
 
         try {
             await this.engine.mutate({
                 resource: this.resource,
                 type: 'update',
                 id: this.dataStoreId,
-                data: newSettings
+                data: this.settings
             })
-            this.settings = newSettings
         } catch (e) {
+            this.settings = prevSettings
             this.eventEmitter.emit(`change ${key}`, this.get(key))
             this.eventEmitter.emit('change', this.settings)
 

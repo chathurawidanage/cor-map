@@ -9,8 +9,6 @@ export const VisualizationWrapper = () => {
     const engine = useDataEngine()
     const [visualization, { remove }] = useSavedObject(id)
 
-    console.log(id, visualization)
-
     if (!id || !visualization) {
         return <Redirect to="/" />
     }

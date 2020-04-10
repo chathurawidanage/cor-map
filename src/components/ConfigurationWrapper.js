@@ -17,7 +17,6 @@ export const ConfigurationWrapper = () => {
             setSavedId(id)
         } else {
             const result = await add(newVisualization)
-            console.log('result', result, newVisualization)
             setSavedId(result.id)
         }
     }, [id, update, add])
