@@ -66,12 +66,77 @@ const RelationshipTypes = ({selectedRTs, rts, onChange}) => {
     );
 };
 
-const Mapping = ({relationship, templates}) => {
+const Mapping = ({relationship, templates, trackedEntityTypes, onRelationshipTemplateChanged, relationshipTemplate}) => {
     let templatesTo = [];
     let templatesFrom = [];
 
-    console.log(relationship);
+    let fromTe = relationship.fromConstraint.trackedEntityType.id;
+    let toTe = relationship.toConstraint.trackedEntityType.id;
+
+    Object.values(templates).forEach(tem => {
+        if (tem.te === fromTe) {
+            templatesFrom.push(tem);
+        }
+
+        if (tem.te === toTe) {
+            templatesTo.push(tem);
+        }
+    });
+
+    const onFromChanged = (selection) => {
+        onRelationshipTemplateChanged(relationship.id, "from", selection.selected);
+    };
+
+    const onToChanged = (selection) => {
+        onRelationshipTemplateChanged(relationship.id, "to", selection.selected);
+    };
+
+    relationshipTemplate = relationshipTemplate || {};
+
+    return (
+        <div>
+            <h4>{relationship.name}</h4>
+            <div className="relationship-mapping">
+                <div>
+                    <SingleSelectField label="from" selected={relationshipTemplate.from} onChange={onFromChanged}>
+                        {templatesFrom.map(f => <SingleSelectOption label={f.name} value={f.id} key={f.id}/>)}
+                    </SingleSelectField>
+                </div>
+                <div>
+
+                </div>
+                <div>
+                    <SingleSelectField label="to" selected={relationshipTemplate.to} onChange={onToChanged}>
+                        {templatesTo.map(f => <SingleSelectOption label={f.name} value={f.id} key={f.id}/>)}
+                    </SingleSelectField>
+                </div>
+            </div>
+            {/*{relationshipTemplate.from && relationshipTemplate.to && (*/}
+            {/*    <div className="relationship-preview">*/}
+            {/*        <Template template={templates[relationshipTemplate.from.value]}/>*/}
+            {/*        <img src="img/arrow.svg" width={60}/>*/}
+            {/*        <Template template={templates[relationshipTemplate.to.value]}/>*/}
+            {/*    </div>*/}
+            {/*)}*/}
+        </div>
+    );
 };
+
+const Template = ({template}) => {
+    return (
+        <div>
+            <div className="te-node-preview" style={{backgroundColor: template.color}}>
+                {template.useIcon ?
+                    <img src="img/man.png" width={40} alt="gender-icon"/> : null}
+            </div>
+            <div className="te-node-preview-label">
+                <p>
+                    {template.useLabel && template.labelAttributes.map(att => att.label).join(" | ")}
+                </p>
+            </div>
+        </div>
+    );
+}
 
 const TrackedEntityTemplate = ({template, selectedTEs, onFieldChanged, tes, onDelete}) => {
 
@@ -109,21 +174,17 @@ const TrackedEntityTemplate = ({template, selectedTEs, onFieldChanged, tes, onDe
         onFieldChanged(template.id, "genderAttribute", value.selected);
     };
 
+    const onGenderMaleMatchChanged = (event) => {
+        onFieldChanged(template.id, "genderMaleMatch", event.value);
+    };
+
     return (
         <Card className="te-card">
             <div className="te-card-header">
                 <h4>
                     <EditableText placeholder="Unnamed Template" onChange={onNameChanged} value={template.name}/>
                 </h4>
-                <div className="te-node-preview" style={{backgroundColor: template.color}}>
-                    {template.useIcon ?
-                        <img src="img/man.png" width={40} alt="gender-icon"/> : null}
-                </div>
-                <div className="te-node-preview-label">
-                    <p>
-                        {template.useLabel && template.labelAttributes.map(att => att.label).join(" | ")}
-                    </p>
-                </div>
+                <Template template={template}/>
             </div>
             <div className="te-configs">
                 <SliderPicker color={template.color} onChange={onColorChanged}/>
@@ -143,7 +204,8 @@ const TrackedEntityTemplate = ({template, selectedTEs, onFieldChanged, tes, onDe
                                     return <SingleSelectOption label={tea.displayName} value={tea.id} key={tea.id}/>
                                 })}
                             </SingleSelectField>
-                            <InputField label="Value of the 'Male' gender to match"/>
+                            <InputField label="Value of the 'Male' gender to match" value={template.genderMaleMatch}
+                                        onChange={onGenderMaleMatchChanged}/>
                         </div> : null
                 }
                 <SwitchField label="Show Node Label" checked={template.useLabel} onChange={onLabelToggle}/>
@@ -176,7 +238,9 @@ export default class Configurations extends React.Component {
             teTemplates: {},
             loading: true,
             meta: {},
-            name: "Cases to Suspects"
+            name: "Cases to Suspects",
+            relationshipTemplates: {},
+            id: uuid()
         }
     }
 
@@ -188,9 +252,18 @@ export default class Configurations extends React.Component {
         // load meta data
         Promise.all([this.props.engine.query(trackedEntityTypes),
             this.props.engine.query(relationshipTypes)]).then(resp => {
+            let trackedEntityTypesInv = {};
+            let relationshipTypesInv = {};
+            resp[0].tes.trackedEntityTypes.forEach(te => {
+                trackedEntityTypesInv[te.id] = te;
+            });
+            resp[1].rts.relationshipTypes.forEach(re => {
+                relationshipTypesInv[re.id] = re;
+            });
+
             this.setState({
                 loading: false,
-                meta: {...resp[0].tes, ...resp[1].rts}
+                meta: {...resp[0].tes, ...resp[1].rts, trackedEntityTypesInv, relationshipTypesInv}
             })
         });
     }
@@ -225,6 +298,17 @@ export default class Configurations extends React.Component {
         this.setState({
             teTemplates
         });
+    };
+
+    onRelationshipTemplateChanged = (relationshipId, side, templateId) => {
+        let relationshipTemplates = this.state.relationshipTemplates;
+        if (!relationshipTemplates[relationshipId]) {
+            relationshipTemplates[relationshipId] = {}
+        }
+
+        relationshipTemplates[relationshipId][side] = templateId;
+        console.log("Setting relationship template", relationshipTemplates);
+        this.setState({relationshipTemplates});
     };
 
     render() {
@@ -279,8 +363,24 @@ export default class Configurations extends React.Component {
                         <div className="mapping-wrapper">
                             <h3>Step 4</h3>
                             <p>Map the Templates to Relationships</p>
+                            <div>
+                                {this.state.selectedRTs.map(rt => <Mapping key={rt.value}
+                                                                           onRelationshipTemplateChanged={this.onRelationshipTemplateChanged}
+                                                                           relationship={this.state.meta.relationshipTypesInv[rt.value]}
+                                                                           trackedEntityTypes={this.state.meta.trackedEntityTypesInv}
+                                                                           relationshipTemplate={this.state.relationshipTemplates[rt.value]}
+                                                                           templates={this.state.teTemplates}/>)}
+                            </div>
                         </div>
                         : null
+                }
+                {
+                    Object.values(this.state.relationshipTemplates).length > 0
+                    && Object.values(this.state.relationshipTemplates).map(rt => rt.from && rt.to).filter(valid => !valid).length === 0 &&
+                    <div>
+                        <h3>Step 5</h3>
+                        <Button primary={true}>Save</Button>
+                    </div>
                 }
             </div>
         )

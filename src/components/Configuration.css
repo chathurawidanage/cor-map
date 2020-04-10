@@ -35,6 +35,21 @@
     grid-row-gap: 10px;
 }
 
-.te-node-preview-label{
+.te-node-preview-label {
     margin-top: -10px;
+}
+
+.relationship-mapping {
+    display: grid;
+    grid-template-columns: auto 100px auto;
+}
+
+.relationship-preview {
+    display: grid;
+    grid-template-columns: 60px 60px 60px;
+    height: 60px;
+}
+
+.relationship-preview .te-node-preview {
+    margin: 0 !important;
 }
