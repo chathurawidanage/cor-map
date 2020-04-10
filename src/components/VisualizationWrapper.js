@@ -15,14 +15,14 @@ export const VisualizationWrapper = () => {
         return <Redirect to="/" />
     }
 
-    // return <div>
-    //     <Link to={`/`}>
-    //         <Button>Home</Button>
-    //     </Link>
-    //     <Link to={`/visualization/${id}/edit`}>
-    //         <Button>Edit</Button>
-    //     </Link>
-    //     <Button destructive onClick={() => remove()}>Delete</Button>
-    // </div>
-    return <Visualization engine={engine} visualization={visualization} />
+    return <div>
+        <Link to={`/`}>
+            <Button>Home</Button>
+        </Link>
+        <Link to={`/visualization/${id}/edit`}>
+            <Button>Edit</Button>
+        </Link>
+        <Button destructive onClick={() => remove()}>Delete</Button>
+    </div>
+    // return <Visualization engine={engine} visualization={visualization} />
 }
