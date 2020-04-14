@@ -156,7 +156,8 @@ export default class Visualization extends React.Component {
             let genderMaleMatch = programToTemplate[pgId].genderMaleMatch;
 
             let labelAttributes = programToTemplate[pgId].useLabel
-                && programToTemplate[pgId].labelAttributes.map(att => att.value);
+                ? programToTemplate[pgId].labelAttributes.map(att => att.value)
+                : [];
             this.state.teiDB.program[pgId].forEach(teiId => {
                 if (teisAdded[teiId]) {
                     console.warn("Found an already added TEI. Possible multiple enrollments", teiId);
@@ -261,11 +262,11 @@ export default class Visualization extends React.Component {
                     this.state.loading ?
                         <Loader/> :
                         <div>
-                            <Legend visualization={this.props.visualization}/>
                             <Graph
                                 graph={this.state.graph}
                                 options={options}
                                 events={this.events}/>
+                            <Legend visualization={this.props.visualization}/>
                         </div>
                 }
             </div>
