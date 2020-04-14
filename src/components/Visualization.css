@@ -1,0 +1,9 @@
+.visualization-buttons{
+    position: absolute;
+    left: 10px;
+    top: 58px;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-column-gap: 5px;
+    z-index: 999999;
+}

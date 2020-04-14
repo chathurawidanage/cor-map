@@ -26,12 +26,22 @@ export const trackedEntityTypes = {
     }
 };
 
+export const programs = {
+    ps: {
+        resource: `programs`,
+        params: () => ({
+            paging: "false",
+            fields: ["id", "displayName", "trackedEntityType[id,displayName]", "programTrackedEntityAttributes[id,displayName,trackedEntityAttribute[id,displayName]]"]
+        })
+    }
+};
+
 export const trackedEntityType = (te) => {
     return {
         tes: {
             resource: `trackedEntityTypes/${te}`,
             params: () => ({
-                paging: false,
+                paging: "false",
                 fields: ["id", "displayName", "trackedEntityTypeAttributes[id,displayName]"]
             })
         }

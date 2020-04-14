@@ -24,12 +24,6 @@
     text-align: center;
 }
 
-.case {
-    background: #ef9a9a;
-    border: 1px solid #4e8ecc;
-}
-
-.suspect {
-    background: #FFEB3B;
+.symbol-border {
     border: 1px solid #4e8ecc;
 }

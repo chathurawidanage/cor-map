@@ -41,7 +41,7 @@
 
 .relationship-mapping {
     display: grid;
-    grid-template-columns: auto 100px auto;
+    grid-template-columns: calc(50% - 50px) 100px calc(50% - 50px);
 }
 
 .relationship-preview {
@@ -58,6 +58,6 @@
     margin-top: 10px;
 }
 
-.config-bottons > button {
+.config-buttons > button {
     margin-right: 10px;
 }

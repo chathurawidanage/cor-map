@@ -10,12 +10,13 @@ import {
     SingleSelectOption,
     SwitchField
 } from "@dhis2/ui-core";
-import {relationshipTypes, trackedEntityTypes} from "../queries/TEIQueries";
+import {programs, relationshipTypes, trackedEntityInstanceQuery, trackedEntityTypes} from "../queries/TEIQueries";
 import Loader from "./loader/Loader";
 import {SliderPicker} from "react-color";
 import "./Configuration.css";
 import uuid from "uuid4";
 import {EditableText} from "@blueprintjs/core";
+import {useDataQuery} from "@dhis2/app-runtime";
 
 const RELATIONSHIP_ENTITY_TEI = "TRACKED_ENTITY_INSTANCE";
 
@@ -67,11 +68,16 @@ const RelationshipTypes = ({selectedRTs, rts, onChange}) => {
 };
 
 const Mapping = ({relationship, templates, trackedEntityTypes, onRelationshipTemplateChanged, relationshipTemplate}) => {
+    // eligible templates for "to"
     let templatesTo = [];
+
+    // eligible templates for "from"
     let templatesFrom = [];
 
     let fromTe = relationship.fromConstraint.trackedEntityType.id;
     let toTe = relationship.toConstraint.trackedEntityType.id;
+
+    let templateIdMap = {}
 
     Object.values(templates).forEach(tem => {
         if (tem.te === fromTe) {
@@ -81,6 +87,8 @@ const Mapping = ({relationship, templates, trackedEntityTypes, onRelationshipTem
         if (tem.te === toTe) {
             templatesTo.push(tem);
         }
+
+        templateIdMap[tem.id] = tem;
     });
 
     const onFromChanged = (selection) => {
@@ -93,12 +101,18 @@ const Mapping = ({relationship, templates, trackedEntityTypes, onRelationshipTem
 
     relationshipTemplate = relationshipTemplate || {};
 
+    let fromId = relationshipTemplate.from?.value;
+    let toId = relationshipTemplate.to?.value;
+
     return (
         <div>
             <h4>{relationship.name}</h4>
             <div className="relationship-mapping">
                 <div>
-                    <SingleSelectField label="from" selected={relationshipTemplate.from} onChange={onFromChanged}>
+                    <SingleSelectField label="Template for 'from'" selected={templateIdMap[fromId] ? {
+                        value: fromId,
+                        label: templateIdMap[fromId]?.name
+                    } : {}} onChange={onFromChanged}>
                         {templatesFrom.map(f => <SingleSelectOption label={f.name} value={f.id} key={f.id}/>)}
                     </SingleSelectField>
                 </div>
@@ -106,7 +120,10 @@ const Mapping = ({relationship, templates, trackedEntityTypes, onRelationshipTem
 
                 </div>
                 <div>
-                    <SingleSelectField label="to" selected={relationshipTemplate.to} onChange={onToChanged}>
+                    <SingleSelectField label="Template for 'to'" selected={templateIdMap[toId] ? {
+                        value: toId,
+                        label: templateIdMap[toId]?.name
+                    } : {}} onChange={onToChanged}>
                         {templatesTo.map(f => <SingleSelectOption label={f.name} value={f.id} key={f.id}/>)}
                     </SingleSelectField>
                 </div>
@@ -140,11 +157,19 @@ const Template = ({template}) => {
 
 const TrackedEntityTemplate = ({template, selectedTEs, onFieldChanged, tes, onDelete}) => {
 
-    let tesById = {};
 
-    tes.forEach(te => {
-        tesById[te.id] = te;
+    let {loading, data} = useDataQuery(programs);
+
+    if (loading) {
+        return <Loader/>
+    }
+
+    let programById = {};
+
+    data.ps.programs.forEach(pg => {
+        programById[pg.id] = pg;
     });
+
 
     const onColorChanged = (color) => {
         onFieldChanged(template.id, "color", color.hex);
@@ -158,8 +183,8 @@ const TrackedEntityTemplate = ({template, selectedTEs, onFieldChanged, tes, onDe
         onFieldChanged(template.id, "useIcon", value.checked);
     };
 
-    const onTEChanged = (selection) => {
-        onFieldChanged(template.id, "te", selection.selected.value);
+    const onProgramChanged = (selection) => {
+        onFieldChanged(template.id, "program", selection.selected);
     };
 
     const onLabelToggle = (value) => {
@@ -188,20 +213,22 @@ const TrackedEntityTemplate = ({template, selectedTEs, onFieldChanged, tes, onDe
             </div>
             <div className="te-configs">
                 <SliderPicker color={template.color} onChange={onColorChanged}/>
-                <SingleSelectField label="Tracked Entity"
-                                   selected={{value: template.te, label: tesById[template.te].displayName}}
-                                   onChange={onTEChanged}>
-                    {selectedTEs.map(te => <SingleSelectOption label={tesById[te].displayName} value={te} key={te}/>)}
+                <SingleSelectField label="Program"
+                                   selected={template.program}
+                                   onChange={onProgramChanged}>
+                    {data.ps.programs.map(pg => <SingleSelectOption label={pg.displayName} value={pg.id} key={pg.id}/>)}
                 </SingleSelectField>
                 <SwitchField label="Use gender icon" checked={template.useIcon} onChange={onGenderIconToggle}/>
                 {
-                    template.useIcon ?
+                    template.useIcon && template.program ?
                         <div>
                             <SingleSelectField label="Choose the gender attribute"
                                                selected={template.genderAttribute}
                                                onChange={onGenderAttributeChanged}>
-                                {tesById[template.te].trackedEntityTypeAttributes.map(tea => {
-                                    return <SingleSelectOption label={tea.displayName} value={tea.id} key={tea.id}/>
+                                {programById[template.program.value].programTrackedEntityAttributes.map(tea => {
+                                    return <SingleSelectOption label={tea.trackedEntityAttribute.displayName}
+                                                               value={tea.trackedEntityAttribute.id}
+                                                               key={tea.trackedEntityAttribute.id}/>
                                 })}
                             </SingleSelectField>
                             <InputField label="Value of the 'Male' gender to match" value={template.genderMaleMatch}
@@ -210,12 +237,14 @@ const TrackedEntityTemplate = ({template, selectedTEs, onFieldChanged, tes, onDe
                 }
                 <SwitchField label="Show Node Label" checked={template.useLabel} onChange={onLabelToggle}/>
                 {
-                    template.useLabel ?
+                    template.useLabel && template.program ?
                         <div>
                             <MultiSelectField label="Node Label Attributes" selected={template.labelAttributes}
                                               onChange={onLabelAttributesChanged}>
-                                {tesById[template.te].trackedEntityTypeAttributes.map(tea => {
-                                    return <MultiSelectOption label={tea.displayName} value={tea.id} key={tea.id}/>
+                                {programById[template.program.value].programTrackedEntityAttributes.map(tea => {
+                                    return <MultiSelectOption label={tea.trackedEntityAttribute.displayName}
+                                                              value={tea.trackedEntityAttribute.id}
+                                                              key={tea.trackedEntityAttribute.id}/>
                                 })}
                             </MultiSelectField>
                         </div> : null

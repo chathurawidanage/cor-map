@@ -26,5 +26,13 @@
   },
   "devDependencies": {
     "@dhis2/cli-app-scripts": "^3.2.6"
-  }
+  },
+  "author": {
+    "name": "Chathura Widanage"
+  },
+  "contributors": [
+    {
+      "name": "Austin McGee"
+    }
+  ]
 }
