@@ -1,17 +1,26 @@
 export const trackedEntityInstanceQuery = {
     tei: {
         resource: 'trackedEntityInstances',
-        id: ({id}) => id
+        id: ({id}) => id,
+        params: ({ program }) => ({
+            program,
+            fields: [
+                'attributes[attribute, displayName, value]',
+                'enrollments[program]',
+                'orgUnit'
+            ]
+        })
     }
 };
 
 
-export const relationshipTypes = {
+export const relationshipTypesQuery = {
     rts: {
         resource: "relationshipTypes",
         params: () => ({
             paging: 'false',
-            fields: ["id", "name", "description", "toConstraint", "fromConstraint"]
+            fields: ["id", "name", "bidirectional", "description", "toConstraint", "fromConstraint"],
+
         })
     }
 };
@@ -26,11 +35,12 @@ export const trackedEntityTypes = {
     }
 };
 
-export const programs = {
+export const programsQuery = {
     ps: {
         resource: `programs`,
         params: () => ({
             paging: "false",
+            filter: 'programType:eq:WITH_REGISTRATION',
             fields: ["id", "displayName", "trackedEntityType[id,displayName]", "programTrackedEntityAttributes[id,displayName,trackedEntityAttribute[id,displayName]]"]
         })
     }

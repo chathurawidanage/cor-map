@@ -1,0 +1,40 @@
+.main-background {
+    padding: 32px;
+    height: 100%;
+    background-color: #f4f6f8;;
+}
+
+.main-wrapper {
+    margin: 0 auto;
+    max-width: 320px;
+    min-height: 320px;
+    background-color: #FFFFFF;
+    border: 1px solid #e0e2e4;
+    border-radius: 4px;
+    padding: 16px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    flex: 1;
+}
+
+.main-content li .link {
+    padding: 15px 8px;
+}
+.main-content li .label {
+    word-break: break-all;
+    word-wrap: normal;
+    hyphens: auto;
+}
+
+.main-footer {
+    align-self: flex-end;
+    
+}
+
+.main-wrapper h3 {
+    margin-top: 0;
+}

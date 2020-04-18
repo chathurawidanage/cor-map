@@ -1,31 +1,34 @@
 import React from 'react'
-import { VisualizationWrapper } from './components/VisualizationWrapper';
-import "@blueprintjs/core/lib/css/blueprint.css"
 import {HashRouter, Switch, Route, Redirect} from "react-router-dom";
-import Main from "./components/Main";
+import { StartPage } from "./components/pages/StartPage";
+
 import { DataStoreProvider } from './services/dataStore/DataStoreProvider';
-import { ConfigurationWrapper } from './components/ConfigurationWrapper';
+
+import { VisualizationPage } from './components/pages/VisualizationPage';
+import { ConfigurationPage } from './components/pages/ConfigurationPage';
 
 import './locales'
 
-const ContactTracingApp = () => {
-        return <DataStoreProvider loadingComponent="..." namespace={'CONTACT_TRACING_APP'} >
+const ContactTracingApp = (props) => {
+    return (
+        <DataStoreProvider loadingComponent="..." namespace={'CONTACT_TRACING_APP'} >
             <HashRouter>
                 <Switch>
-                    <Route path="/" exact={true} component={Main}/>
+                    <Route path="/" exact={true} component={StartPage}/>
                     <Route path="/new" exact={true}>
-                        <ConfigurationWrapper />
+                        <ConfigurationPage />
                     </Route>
                     <Route path="/visualization/:id" exact={true}>
-                        <VisualizationWrapper />
+                        <VisualizationPage />
                     </Route>
                     <Route path="/visualization/:id/edit" exact={true}>
-                        <ConfigurationWrapper />
+                        <ConfigurationPage />
                     </Route>
                     <Redirect to="/" />
                 </Switch>
             </HashRouter>
         </DataStoreProvider>
+    )
 };
 
 export default ContactTracingApp
