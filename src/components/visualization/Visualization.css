@@ -1,0 +1,45 @@
+.visualization-canvas, .visualization-canvas:focus {
+    position: relative;
+    flex: 1;
+    outline: none;
+    background-color: #f4f6f8;
+}
+
+.visualization-canvas-inner {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.visualization-topbar {
+    display: flex;
+    flex-direction: row;
+
+    padding: 8px;
+    border-bottom: 1px solid #e0e2e4;
+}
+.visualization-buttons button {
+    margin-left: 8px;
+}
+.visualization-page {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.visualization-title {
+    margin-left: 8px;
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.visualization-overlay {
+    padding: 8px;
+    border: 1px solid #e0e2e4;
+    border-radius: 4px;
+    background-color: #FFFFFF;
+}

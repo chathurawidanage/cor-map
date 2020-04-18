@@ -1,0 +1,77 @@
+.config-wrapper {
+    padding: 16px;
+}
+
+.config-te-cards {
+    margin-top: 8px;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-row-gap: 8px;
+}
+
+@media (min-width: 800px) {
+    .config-te-cards {
+        grid-template-columns: 1fr 1fr;
+        grid-column-gap: 8px;
+    }
+}
+
+.te-node-preview {
+    width: 64px;
+    height: 64px;
+    border-radius: 100%;
+    text-align: center;
+    margin: auto;
+    margin-bottom: 16px;
+    border: 1px solid #4e8ecc;
+    padding: 8px;
+}
+
+.te-card {
+    height: 100%;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.te-card-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.te-card-footer {
+    margin-top: auto;
+}
+
+.te-configs {
+    display: grid;
+    grid-row-gap: 8px;
+}
+
+.te-node-preview-label {
+    margin-top: -10px;
+}
+
+.relationship-mapping {
+    display: grid;
+    grid-template-columns: calc(50% - 50px) 100px calc(50% - 50px);
+}
+
+.relationship-preview {
+    display: grid;
+    grid-template-columns: 64px 64px 64px;
+    height: 64px;
+}
+
+.relationship-preview .te-node-preview {
+    margin: 0 !important;
+}
+
+.config-final-step > * {
+    margin-top: 16px;
+    margin-right: 8px;
+}
+
+.config-checkbox input {
+    display: none; /* This appears to be a bug in `ui-core` */
+}

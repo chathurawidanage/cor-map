@@ -1,10 +1,7 @@
 .legend {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-}
-
-.legend-card {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
     display: grid !important;
     grid-row-gap: 10px;
     padding: 10px;

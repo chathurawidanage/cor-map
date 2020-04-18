@@ -1,15 +1,14 @@
 import React from 'react';
 import Graph from "react-graph-vis";
-import Loader from "./loader/Loader";
-import TEIDrawer from "./TEIDrawer";
-import {getProgramsToQuery, getTEAttributes} from "../Utils";
-import Legend from "./Legend";
-import {programTEIQuery} from '../queries/TEIQueries';
+import Loader from "../loader/Loader";
+import { TEIDetailsModal } from "./TEIDetailsModal";
+import {getProgramsToQuery, getTEAttributes} from "../../Utils";
+import {programTEIQuery} from '../../queries/TEIQueries';
 import "./Visualization.css";
 
 const options = {
     layout: {
-        // improvedLayout: true,
+        improvedLayout: true,
         // "hierarchical": {
         //     "enabled": true,
         //     "sortMethod": "directed",
@@ -20,7 +19,7 @@ const options = {
     },
     edges: {
         color: "#000000",
-        // smooth: {enabled: true, type: 'straightCross'}
+        smooth: {enabled: true, type: 'straightCross'}
     },
     nodes: {
         imagePadding: 5
@@ -32,7 +31,7 @@ const options = {
         }
     },
     autoResize: true,
-    height: (window.innerHeight - 50) + "px",
+    height: '100%',
     width: '100%'
 };
 
@@ -50,17 +49,13 @@ export default class Visualization extends React.Component {
             selectedTei: undefined,
             teiToProgram: {},
             teiDB: {
-                program: {
-                    // [DHIS2Costants.PROGRAM_ID_CASE]: [],
-                    // [DHIS2Costants.PROGRAM_ID_SUSPECT]: []
-                },
-                relationships: {
-                    // [DHIS2Costants.REL_CASE_TO_CASE]: [],
-                    // [DHIS2Costants.REL_CASE_TO_SUSPECT]: [],
-                },
+                instances: {},
+                relationships: [],
                 attributes: {}
             }
         };
+
+        console.log(props.visualization)
 
         this.events = {
             doubleClick: (event) => {
@@ -81,37 +76,34 @@ export default class Visualization extends React.Component {
         });
     };
 
-    addCaseToCaseLink = (edges, from, to) => {
-        this.addLink(edges, from, to, "red");
-    };
-
     addLink(edges, from, to, color = "black") {
-        edges.push({from, to, color});
+        edges.push({
+            from,
+            to,
+            color,
+            arrows: this.props.visualization.useBidirectionalArrows ? 'from,to' : 'to'
+        });
     }
 
-    addNode(nodes, id, label, color, img = "img/man.png") {
+    addNode(nodes, id, label, color, image) {
         nodes.push({
             id: id,
             label: label,
             color: {background: color},
-            image: img,
-            shape: "circularImage"
+            image,
+            shape: image ? "circularImage" : "dot"
         })
     }
 
     processTEIResponse(teiDB, trackedEntityInstances, program) {
-        teiDB.program[program] = [];
         trackedEntityInstances.forEach(tei => {
-            teiDB.program[program].push(tei.trackedEntityInstance);
             teiDB.attributes[tei.trackedEntityInstance] = {
                 program: program
             };
-            if (tei.relationships && tei.relationships.length > 0) {
-                tei.relationships.forEach(rel => {
-                    if (!teiDB.relationships[rel.relationshipType]) {
-                        teiDB.relationships[rel.relationshipType] = [];
-                    }
-                    teiDB.relationships[rel.relationshipType].push({
+            if (!this.props.visualization.hideUnrelatedInstances || (tei.relationships && tei.relationships.length > 0)) {
+                teiDB.instances[tei.trackedEntityInstance] = tei
+                tei.relationships?.forEach(rel => {
+                    teiDB.relationships.push({
                         from: rel.from.trackedEntityInstance.trackedEntityInstance,
                         to: rel.to.trackedEntityInstance.trackedEntityInstance
                     });
@@ -145,50 +137,29 @@ export default class Visualization extends React.Component {
             programToTemplate[te.program.value] = te;
         });
 
-        console.log(this.state.teiDB);
+        Object.values(this.state.teiDB.instances).forEach(tei => {
+            const teiId = tei.trackedEntityInstance
+            const pgId = this.state.teiDB.attributes[teiId].program
 
-        let teisAdded = {};
-
-        Object.keys(this.state.teiDB.program).forEach(pgId => {
             let color = programToTemplate[pgId].color || "white";
-            let genderAttribute = programToTemplate[pgId].useIcon
-                && programToTemplate[pgId].genderAttribute?.value;
-            let genderMaleMatch = programToTemplate[pgId].genderMaleMatch;
 
             let labelAttributes = programToTemplate[pgId].useLabel
                 ? programToTemplate[pgId].labelAttributes.map(att => att.value)
                 : [];
-            this.state.teiDB.program[pgId].forEach(teiId => {
-                if (teisAdded[teiId]) {
-                    console.warn("Found an already added TEI. Possible multiple enrollments", teiId);
-                    return;
-                }
-                let genderIcon = "img/unknown.png";
-                if (genderAttribute) {
-                    if (this.state.teiDB.attributes[teiId][genderAttribute]
-                        && this.state.teiDB.attributes[teiId][genderAttribute] === genderMaleMatch) {
-                        genderIcon = "img/man.png";
-                    } else {
-                        genderIcon = "img/girl.png";
-                    }
-                }
 
-                let labelArr = labelAttributes.map(att => this.state.teiDB.attributes[teiId][att]);
-                let label = labelArr.length > 1 ? labelArr.join(" | ") : (labelArr.length > 0 ? labelArr[0] : "");
-                this.addNode(nodes, teiId, label, color, genderIcon);
-                teisAdded[teiId] = true;
-            });
-        });
+            let labelArr = labelAttributes.map(att => this.state.teiDB.attributes[teiId][att]);
+            let label = labelArr.length > 1 ? labelArr.join(" | ") : (labelArr.length > 0 ? labelArr[0] : "");
+                
+            this.addNode(nodes, teiId, label, color);
+        })
 
         // now process edges
-        Object.values(this.state.teiDB.relationships).forEach(rels => {
-            rels.forEach(rel => {
-                if (teisAdded[rel.from] && teisAdded[rel.to]) {
-                    this.addLink(edges, rel.from, rel.to);
-                } else {
-                    console.warn("Found TEIs that hasn't been added", rel);
-                }
-            });
+        this.state.teiDB.relationships.forEach(rel => {
+            if (this.state.teiDB.instances[rel.from] && this.state.teiDB.instances[rel.to]) {
+                this.addLink(edges, rel.from, rel.to);
+            } else {
+                console.warn("Found TEIs that hasn't been added", rel, this.state.teiDB.instances[rel.from], this.state.teiDB.instances[rel.to]);
+            }
         });
 
         this.setState({
@@ -198,8 +169,6 @@ export default class Visualization extends React.Component {
     };
 
     componentDidMount() {
-        console.log("VISUA", JSON.stringify(this.props.visualization));
-
         const programs = getProgramsToQuery(this.props.visualization);
 
         const requests = programs.map(program => {
@@ -227,7 +196,6 @@ export default class Visualization extends React.Component {
                     attributesToFetchMap[att] = true;
                 });
 
-                console.log("Data", data);
                 // process TEI response
                 if (data?.teis?.trackedEntityInstances) {
                     this.processTEIResponse(teiDB, data.teis.trackedEntityInstances, program);
@@ -250,9 +218,9 @@ export default class Visualization extends React.Component {
 
     render() {
         return (
-            <div className="App">
+            <div className="visualization-canvas-inner">
                 {
-                    this.state.selectedTei ? <TEIDrawer te={this.state.selectedTei} onClose={() => {
+                    this.state.selectedTei ? <TEIDetailsModal te={this.state.selectedTei} programs={this.props.programs} onClose={() => {
                         this.setState({
                             selectedTei: false
                         });
@@ -261,13 +229,10 @@ export default class Visualization extends React.Component {
                 {
                     this.state.loading ?
                         <Loader/> :
-                        <div>
-                            <Graph
-                                graph={this.state.graph}
-                                options={options}
-                                events={this.events}/>
-                            <Legend visualization={this.props.visualization}/>
-                        </div>
+                        <Graph
+                            graph={this.state.graph}
+                            options={options}
+                            events={this.events}/>
                 }
             </div>
         );

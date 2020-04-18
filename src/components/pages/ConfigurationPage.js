@@ -1,10 +1,11 @@
-import { useSavedObjectList } from "../services/dataStore"
-import Configurations from "./Configuration";
 import { useCallback, useState } from "react";
 import { useParams, useHistory, Redirect } from "react-router-dom";
 import { useDataEngine } from "@dhis2/app-runtime";
 
-export const ConfigurationWrapper = () => {
+import { useSavedObjectList } from "../../services/dataStore"
+import { ConfigurationEditor } from "../configuration/ConfigurationEditor";
+
+export const ConfigurationPage = () => {
     const engine = useDataEngine()
     const { id } = useParams()
     const history = useHistory()
@@ -30,5 +31,9 @@ export const ConfigurationWrapper = () => {
     }
 
     const visualization = id ? visualizations.find(vis => vis.id === id) : undefined
-    return <Configurations engine={engine} visualization={visualization} onSave={onSave} onCancel={onCancel}/>
+
+    if (id && !visualization) {
+        return <Redirect to={`/new`} />
+    }
+    return <ConfigurationEditor engine={engine} visualization={visualization} onSave={onSave} onCancel={onCancel}/>
 }
