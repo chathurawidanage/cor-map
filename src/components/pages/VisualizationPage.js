@@ -1,8 +1,8 @@
-import Visualization from "../visualization/Visualization"
-import {useDataEngine} from "@dhis2/app-runtime"
-import {useSavedObject} from "../../services/dataStore/useSavedObject"
-import {useParams, Redirect, Link} from "react-router-dom";
-import {Button, MenuItem, Menu} from "@dhis2/ui-core";
+import { Visualization } from "../visualization/Visualization"
+import { useDataEngine } from "@dhis2/app-runtime"
+import { useSavedObject } from "../../services/dataStore/useSavedObject"
+import { useParams, Redirect } from "react-router-dom";
+import { Button } from "@dhis2/ui-core";
 import Legend from "../visualization/Legend";
 import { useDataQuery } from "@dhis2/app-runtime";
 import { programsQuery } from "../../queries/TEIQueries";
@@ -45,14 +45,10 @@ export const VisualizationPage = () => {
 
     return <div className="visualization-page">
         <div className="visualization-topbar">
-            <LinkButton secondary to={`/`}>&lt;</LinkButton>
+            <LinkButton secondary to={`/`}>&larr;</LinkButton>
             <span className="visualization-title">
                 {visualization.name}
             </span>
-            {/* <div>
-                <Button><HamburgerIcon /></Button>
-                <Menu><MenuItem label="Testing" /></Menu>
-            </div> */}
             <div className="visualization-buttons">
                 <LinkButton to={`/visualization/${id}/edit`}>Edit</LinkButton>
                 <Button destructive onClick={onDelete}>Delete</Button>
@@ -63,5 +59,4 @@ export const VisualizationPage = () => {
             <Legend visualization={visualization} programs={programs}/>
         </div>
     </div>
-    // return <Visualization engine={engine} visualization={visualization} />
 }
