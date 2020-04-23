@@ -1,34 +1,40 @@
 import {getProgramsToQuery, getTEAttributes} from './templateUtils';
 import {programTEIQuery} from '../queries/TEIQueries';
 
-const processTEIResponse = (teiDB, trackedEntityInstances, program, visualization) => {
-    trackedEntityInstances.forEach(tei => {
-        teiDB.attributes[tei.trackedEntityInstance] = {
-            program: program
-        };
-        if (!visualization.hideUnrelatedInstances || (tei.relationships && tei.relationships.length > 0)) {
-            teiDB.instances[tei.trackedEntityInstance] = tei
-            tei.relationships?.forEach(rel => {
-                teiDB.relationships.push({
-                    from: rel.from.trackedEntityInstance.trackedEntityInstance,
-                    to: rel.to.trackedEntityInstance.trackedEntityInstance
-                });
-            });
-        }
-    });
-}
+// const isMoreRecent = (dateA, dateB) => {
+//     if (!dateB) {
+//         return true
+//     }
+//     if (!dateA) {
+//         return false
+//     }
+//     return new Date(dateA) > new Date(dateB)
+// }
 
-const processTEIAttributeResponse = (teiDB, attributes, attributesToFetchMap) => {
-    attributes.rows.forEach(row => {
-        if (!teiDB.attributes[row[0]]) {
-            teiDB.attributes[row[0]] = {}
+const isHigherPriority = (programA, programB, programs) => {
+    return programs.indexOf(programA) > programs.indexOf(programB)
+}
+const processTEIResponse = (teiDB, trackedEntityInstances, program, visualization, attributesToFetch) => {
+    const programs = getProgramsToQuery(visualization);
+
+    trackedEntityInstances.forEach(tei => {
+        // const programEnrollmentDate = tei.enrollments.find(e => e.program === program)?.enrollmentDate
+        const existingTEI = teiDB.instances[tei.trackedEntityInstance]
+        if (existingTEI && isHigherPriority(existingTEI.program, program, programs)) { /*&& isMoreRecent(existingTEI.enrollments[0].enrollmentDate, programEnrollmentDate)*/
+            return;
         }
-        for (let i = 7; i < attributes.headers.length; i++) {
-            //saving some RAM
-            if (attributesToFetchMap[attributes.headers[i].name]) {
-                teiDB.attributes[row[0]][attributes.headers[i].name] = row[i];
-            }
-        }
+
+        // Probably unnecessary, better to drop unrelated instances (but difficult to do at this stage)
+        tei.attributes = 
+            tei.attributes.reduce((acc, { attribute, value }) => {
+                if (attributesToFetch.has(attribute)) {
+                    acc[attribute] = value
+                }
+                return acc
+            })
+        
+        tei.program = program
+        teiDB.instances[tei.trackedEntityInstance] = tei
     });
 }
 
@@ -40,7 +46,7 @@ export const fetchVisualizationData = async (engine, visualization) => {
         return engine.query(programTEIQuery, {
             variables: {
                 program,
-                attributes: attributesToFetch
+                attributes: attributesToFetch.keys()
             }
         })
     });
@@ -49,9 +55,7 @@ export const fetchVisualizationData = async (engine, visualization) => {
     const results = await Promise.all(requests)
         
     let teiDB = {
-        instances: [],
-        relationships: [],
-        attributes: {}
+        instances: []
     };
 
     results.forEach((data, i) => {
@@ -60,22 +64,12 @@ export const fetchVisualizationData = async (engine, visualization) => {
         // todo currently TEI queries sends back all the attributes. Bug?
         // this is just to save some RAM
         const attributesToFetch = getTEAttributes(visualization, program);
-        const attributesToFetchMap = {};
-        attributesToFetch.forEach(att => {
-            attributesToFetchMap[att] = true;
-        });
 
         // process TEI response
         if (data?.teis?.trackedEntityInstances) {
-            processTEIResponse(teiDB, data.teis.trackedEntityInstances, program, visualization);
+            processTEIResponse(teiDB, data.teis.trackedEntityInstances, program, visualization, attributesToFetch);
         } else {
             console.warn("Nothing found for program", program);
-        }
-
-        if (data?.attributes?.rows) {
-            processTEIAttributeResponse(teiDB, data.attributes, attributesToFetchMap);
-        } else {
-            console.warn("No attributes found for program", program);
         }
     })
 

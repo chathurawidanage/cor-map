@@ -6,6 +6,7 @@ import { NetworkGraph } from './NetworkGraph';
 import { fetchVisualizationData } from '../../utils/fetchVisualizationData';
 import { createVisJsConfig } from '../../utils/createVisJsConfig';
 import { useDataEngine } from '@dhis2/app-runtime';
+import Legend from './Legend';
 
 export const Visualization = ({ visualization, programs }) => {
     const engine = useDataEngine()
@@ -32,10 +33,13 @@ export const Visualization = ({ visualization, programs }) => {
             }
             {!data || !graphConfig
                 ? <Loader/>
-                : <NetworkGraph onNodeSelected={id => setSelectedTei({
-                    id,
-                    program: data.attributes[id].program
-                })} {...graphConfig} />
+                : <>
+                    <NetworkGraph onNodeSelected={id => setSelectedTei({
+                        id,
+                        program: data.instances[id].program
+                    })} {...graphConfig} />
+                    <Legend visualization={visualization} programs={programs} stats={graphConfig.stats}/>
+                </>
             }
         </div>
     );

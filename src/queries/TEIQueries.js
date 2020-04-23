@@ -63,21 +63,14 @@ export const programTEIQuery = {
         resource: 'trackedEntityInstances',
         params: ({program}) => ({
             ouMode: 'ACCESSIBLE',
-            fields: ['trackedEntityInstance', 'relationships[relationshipType,from[trackedEntityInstance[trackedEntityInstance]],to[trackedEntityInstance[trackedEntityInstance]]]'],
+            fields: [
+                'trackedEntityInstance',
+                'relationships[relationshipType,from[trackedEntityInstance[trackedEntityInstance]],to[trackedEntityInstance[trackedEntityInstance]]]',
+                'attributes[attribute,value]'
+            ],
             paging: 'false',
             programStatus: 'ACTIVE',
-            program
-        })
-    },
-    attributes: {
-        resource: 'trackedEntityInstances/query',
-        params: ({program, attributes}) => ({
-            ouMode: 'ACCESSIBLE',
-            skipMeta: 'true',
-            skipPaging: 'true',
             program,
-            programStatus: 'ACTIVE',
-            attribute: [...attributes]
         })
     }
 };

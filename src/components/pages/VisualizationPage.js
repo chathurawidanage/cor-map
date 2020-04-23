@@ -3,7 +3,6 @@ import { useDataEngine } from "@dhis2/app-runtime"
 import { useSavedObject } from "../../services/dataStore/useSavedObject"
 import { useParams, Redirect } from "react-router-dom";
 import { Button } from "@dhis2/ui-core";
-import Legend from "../visualization/Legend";
 import { useDataQuery } from "@dhis2/app-runtime";
 import { programsQuery } from "../../queries/TEIQueries";
 import i18n from "../../locales";
@@ -56,7 +55,6 @@ export const VisualizationPage = () => {
         </div>
         <div className="visualization-canvas">
             <Visualization engine={engine} visualization={visualization} programs={programs}/>
-            <Legend visualization={visualization} programs={programs}/>
         </div>
     </div>
 }
