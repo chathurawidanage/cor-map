@@ -6,8 +6,10 @@ import { NetworkGraph } from './NetworkGraph';
 import { fetchVisualizationData } from '../../utils/fetchVisualizationData';
 import { createVisJsConfig } from '../../utils/createVisJsConfig';
 import { useDataEngine } from '@dhis2/app-runtime';
+import { AnalyticsDelayOverlay } from './AnalyticsDelayOverlay';
+import { CircularLoader } from '@dhis2/ui-core';
 
-export const Visualization = ({ visualization, programs }) => {
+export const Visualization = ({ visualization, programs, parameters }) => {
     const engine = useDataEngine()
     const [data, setData] = useState(undefined)
     const [selectedTei, setSelectedTei] = useState(undefined)
@@ -15,28 +17,28 @@ export const Visualization = ({ visualization, programs }) => {
     const graphConfig = useMemo(() => data && createVisJsConfig(visualization, data), [visualization, data])
 
     useEffect(() => {
-        fetchVisualizationData(engine, visualization)
+        setData(undefined)
+        fetchVisualizationData(engine, visualization, parameters)
             .then(setData)
-    }, [engine, visualization])
+    }, [engine, visualization, parameters])
 
-    return (
-        <div className="visualization-canvas-inner">
-            {selectedTei 
-                ? <TEIDetailsModal 
-                    te={selectedTei}
-                    programs={programs}
-                    onClose={() => {
-                        setSelectedTei(undefined);
-                    }} />
-                : null
-            }
-            {!data || !graphConfig
-                ? <Loader/>
-                : <NetworkGraph onNodeSelected={id => setSelectedTei({
-                    id,
-                    program: data.attributes[id].program
-                })} {...graphConfig} />
-            }
-        </div>
-    );
+    return <>
+        {selectedTei 
+            ? <TEIDetailsModal 
+                te={selectedTei}
+                programs={programs}
+                onClose={() => {
+                    setSelectedTei(undefined);
+                }} />
+            : null
+        }
+        {!data || !graphConfig
+            ? <CircularLoader className="centered" />
+            : <NetworkGraph onNodeSelected={id => setSelectedTei({
+                id,
+                program: data.attributes[id].program
+            })} {...graphConfig} />
+        }
+        <AnalyticsDelayOverlay />
+    </>
 }

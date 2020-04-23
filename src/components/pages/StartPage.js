@@ -3,6 +3,7 @@ import "./StartPage.css";
 import { VisualizationList } from "../VisualizationList";
 import { LinkButton } from '../helpers/LinkButton'
 import i18n from "@dhis2/d2-i18n";
+import { AnalyticsDelayOverlay } from "../visualization/AnalyticsDelayOverlay";
 
 export class StartPage extends React.Component {
   render() {

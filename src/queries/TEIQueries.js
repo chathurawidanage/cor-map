@@ -61,23 +61,25 @@ export const trackedEntityType = (te) => {
 export const programTEIQuery = {
     teis: {
         resource: 'trackedEntityInstances',
-        params: ({program}) => ({
+        params: ({ program, startDate, endDate }) => ({
             ouMode: 'ACCESSIBLE',
-            fields: ['trackedEntityInstance', 'relationships[relationshipType,from[trackedEntityInstance[trackedEntityInstance]],to[trackedEntityInstance[trackedEntityInstance]]]'],
+            fields: ['trackedEntityInstance', 'relationships[relationshipType,from[trackedEntityInstance[trackedEntityInstance]],to[trackedEntityInstance[trackedEntityInstance]]],attributes'],
             paging: 'false',
             programStatus: 'ACTIVE',
-            program
+            program,
+            programStartDate: startDate,
+            programEndDate: endDate
         })
     },
-    attributes: {
-        resource: 'trackedEntityInstances/query',
-        params: ({program, attributes}) => ({
-            ouMode: 'ACCESSIBLE',
-            skipMeta: 'true',
-            skipPaging: 'true',
-            program,
-            programStatus: 'ACTIVE',
-            attribute: [...attributes]
-        })
-    }
+    // attributes: {
+    //     resource: 'trackedEntityInstances/query',
+    //     params: ({program, attributes}) => ({
+    //         ouMode: 'ACCESSIBLE',
+    //         skipMeta: 'true',
+    //         skipPaging: 'true',
+    //         program,
+    //         programStatus: 'ACTIVE',
+    //         attribute: [...attributes]
+    //     })
+    // }
 };

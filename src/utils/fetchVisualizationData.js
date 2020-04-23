@@ -32,7 +32,7 @@ const processTEIAttributeResponse = (teiDB, attributes, attributesToFetchMap) =>
     });
 }
 
-export const fetchVisualizationData = async (engine, visualization) => {
+export const fetchVisualizationData = async (engine, visualization, { startDate, endDate }) => {
     const programs = getProgramsToQuery(visualization);
 
     const requests = programs.map(program => {
@@ -40,6 +40,8 @@ export const fetchVisualizationData = async (engine, visualization) => {
         return engine.query(programTEIQuery, {
             variables: {
                 program,
+                startDate,
+                endDate,
                 attributes: attributesToFetch
             }
         })
