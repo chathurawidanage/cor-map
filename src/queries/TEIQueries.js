@@ -61,7 +61,7 @@ export const trackedEntityType = (te) => {
 export const programTEIQuery = {
     teis: {
         resource: 'trackedEntityInstances',
-        params: ({program}) => ({
+        params: ({ program, startDate, endDate }) => ({
             ouMode: 'ACCESSIBLE',
             fields: [
                 'trackedEntityInstance',
@@ -71,6 +71,19 @@ export const programTEIQuery = {
             paging: 'false',
             programStatus: 'ACTIVE',
             program,
+            programStartDate: startDate,
+            programEndDate: endDate
         })
-    }
+    },
+    // attributes: {
+    //     resource: 'trackedEntityInstances/query',
+    //     params: ({program, attributes}) => ({
+    //         ouMode: 'ACCESSIBLE',
+    //         skipMeta: 'true',
+    //         skipPaging: 'true',
+    //         program,
+    //         programStatus: 'ACTIVE',
+    //         attribute: [...attributes]
+    //     })
+    // }
 };

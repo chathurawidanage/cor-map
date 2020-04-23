@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { useParams, useHistory, Redirect } from "react-router-dom";
 import { useDataEngine } from "@dhis2/app-runtime";
 
-import { useSavedObjectList } from "../../services/dataStore"
+import { useSavedObjectList } from "../../lib/dataStore"
 import { ConfigurationEditor } from "../configuration/ConfigurationEditor";
 
 export const ConfigurationPage = () => {
