@@ -26,6 +26,13 @@ This creates a set of static files in `build/app` and also automatically generat
 
 ## Generalization TODO
 
-1. [ ] Don't hardcode Program or Attribute UIDs
-2. [ ] Use DataStore to allow application configuration with different programs
-3. [ ] Use [@dhis2/ui-core] components for consistent DHIS2 look-and-feel
+- [x] Don't hardcode Program or Attribute UIDs
+- [x] Use DataStore to allow application configuration with different programs
+- [x] Use [@dhis2/ui-core](https://ui-core.dhis2.nu) components for consistent DHIS2 look-and-feel
+- [ ] Allow date restriction when visualizing
+- [ ] Restrict TEI count for performance
+- [ ] Highlight relationships in details dialog
+- [ ] Fix multi-relationship-type networks
+- [ ] Full-coverage legends (by combination of programs, stage)
+- [ ] Add support for "contact tracing" use-cases
+- [ ] Add support for sharing saved visualizations
