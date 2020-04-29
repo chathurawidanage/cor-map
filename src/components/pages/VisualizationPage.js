@@ -5,13 +5,13 @@ import { useParams, useLocation, Redirect, useHistory } from "react-router-dom";
 import { useDataQuery } from "@dhis2/app-runtime";
 import { programsQuery } from "../../queries/TEIQueries";
 import i18n from "../../locales";
-import Loader from "../loader/Loader";
 import { useState } from "react";
 
 import { TopbarLayout, SidebarLayout } from '../../lib/layouts'
 import { VisualizationTopbar } from "../visualization/VisualizationTopbar";
 import { VisualizationSidebar } from "../visualization/VisualizationSidebar";
 import { VisualizationParameters } from "../visualization/VisualizationParameters";
+import { CenteredMessageLoader } from "../helpers/CenteredMessageLoader";
 
 const parseQuery = (queryString) => 
     queryString
@@ -64,7 +64,7 @@ export const VisualizationPage = () => {
     }
 
     if (loading) {
-        return <Loader />
+        return <CenteredMessageLoader message={i18n.t('Loading visualization...')} />
     }
 
     if (error) {

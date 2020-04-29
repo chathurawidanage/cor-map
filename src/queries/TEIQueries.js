@@ -1,3 +1,5 @@
+export const teiQueryMaxSize = 3000
+
 export const trackedEntityInstanceQuery = {
     tei: {
         resource: 'trackedEntityInstances',
@@ -68,7 +70,7 @@ export const programTEIQuery = {
                 'relationships[relationshipType,from[trackedEntityInstance[trackedEntityInstance]],to[trackedEntityInstance[trackedEntityInstance]]]',
                 'attributes[attribute,value]'
             ],
-            paging: 'false',
+            pageSize: teiQueryMaxSize,
             programStatus: 'ACTIVE',
             program,
             programStartDate: startDate,

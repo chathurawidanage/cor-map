@@ -3,7 +3,7 @@ import { Card, SingleSelectField, SingleSelectOption, SwitchField, InputField, M
 import { SliderPicker } from 'react-color';
 import { programsQuery } from '../../queries/TEIQueries';
 import { useDataQuery } from '@dhis2/app-runtime';
-import Loader from '../loader/Loader';
+import { FullscreenLoader } from '../helpers/FullscreenLoader';
 
 
 const TemplatePreview = ({template}) => {
@@ -30,7 +30,7 @@ export const TrackedEntityTemplateEditor = ({template, selectedTEs, onFieldChang
     let {loading, data} = useDataQuery(programsQuery);
 
     if (loading) {
-        return <Loader/>
+        return <FullscreenLoader />
     }
 
     let programById = {};

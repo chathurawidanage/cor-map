@@ -1,28 +1,26 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useState } from "react";
 import Graph from "react-graph-vis";
+import { CenteredMessageLoader } from "../helpers/CenteredMessageLoader";
+import i18n from "../../locales";
 
 const graphOptions = {
-    layout: {
-        // improvedLayout: true,
-        // "hierarchical": {
-        //     "enabled": true,
-        //     "sortMethod": "directed",
-        //     "direction": "LR",
-        //     nodeSpacing: 200,
-        //     levelSeparation: 200
-        // }
+    interaction: {
+        dragNodes: false
     },
     edges: {
         color: "#000000",
-        smooth: {enabled: true, type: 'straightCross'}
-    },
-    nodes: {
-        imagePadding: 5
     },
     physics: {
-        solver: "barnesHut",
-        barnesHut: {
-            avoidOverlap: 1
+        forceAtlas2Based: {
+            avoidOverlap: 1,
+        },
+        maxVelocity: 146,
+        solver: 'forceAtlas2Based',
+        timestep: 0.35,
+        stabilization: {
+            enabled:true,
+            iterations:2000,
+            updateInterval:25
         }
     },
     autoResize: true,
@@ -31,16 +29,22 @@ const graphOptions = {
 };
 
 export const NetworkGraph = ({ nodes, edges, onNodeSelected }) => {
+    const [stabilizing, setStabilizing] = useState(true)
     const graphEvents = useMemo(() => ({}))
     
-    graphEvents.doubleClick = useCallback(({ nodes: clickedNodes }) => {
+    graphEvents.click = useCallback(({ nodes: clickedNodes }) => {
         if (clickedNodes.length > 0) {
             onNodeSelected(clickedNodes[0])
         }
     }, [onNodeSelected])
 
-    return <Graph
-        graph={{ nodes, edges }}
-        options={graphOptions}
-        events={graphEvents} />
+    graphEvents.stabilizationIterationsDone = useCallback(() => setStabilizing(false))
+
+    return <>
+        {stabilizing && <CenteredMessageLoader message={i18n.t('Reticulating splines...')} />}
+        <Graph
+            graph={{ nodes, edges }}
+            options={graphOptions}
+            events={graphEvents} />
+    </>
 }

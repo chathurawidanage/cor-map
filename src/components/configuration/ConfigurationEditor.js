@@ -5,12 +5,12 @@ import {
     Checkbox
 } from "@dhis2/ui-core";
 import {trackedEntityTypes, relationshipTypesQuery} from "../../queries/TEIQueries";
-import Loader from "../loader/Loader";
 import "./ConfigurationEditor.css";
 
 import { TrackedEntityTemplateEditor } from './TrackedEntityTemplateEditor'
 import { RelationshipTypeSelect } from "./RelationshipTypeSelect";
 import { RelationshipTemplateMapEditor } from "./RelationshipTemplateMapEditor";
+import { FullscreenLoader } from "../helpers/FullscreenLoader";
 
 const stageValidators = [
     config => config.name !== "",
@@ -192,7 +192,7 @@ export class ConfigurationEditor extends React.Component {
     render() {
 
         if (this.state.loading) {
-            return <Loader/>
+            return <FullscreenLoader />
         }
 
         let teCards = this.state.visualization.teTemplates.map(template => {

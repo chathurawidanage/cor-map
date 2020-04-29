@@ -1,14 +1,15 @@
-import Legend from "./Legend"
+
 import { Sidebar } from "../../lib/layouts"
 import { VisualizationParameters } from "./VisualizationParameters"
+import i18n from "../../locales"
 
-export const VisualizationSidebar = ({ visualization, programs, parameters, setParameters }) => 
+export const VisualizationSidebar = ({ visualization, programs, parameters, setParameters, overflown }) => 
     <Sidebar className="flex flex-col flex-repel">
         {parameters ? <>
             <VisualizationParameters parameters={parameters} onSubmit={setParameters} />
-            {/* <Legend visualization={visualization} programs={programs}/> */}
+            <span className="visualization-sidebar-text">{i18n.t('Click on a node in the graph to see details about the TEI')}</span>
         </> : <>
-            
-            <span class="visualization-sidebar-text">Select a date range and click <strong>Update</strong> to begin</span>
+            <div />
+            <span className="visualization-sidebar-text">{i18n.t('Select a date range and click Update to begin')}</span>
         </>}
     </Sidebar>

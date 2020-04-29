@@ -1,5 +1,5 @@
 import {getProgramsToQuery, getTEAttributes} from './templateUtils';
-import {programTEIQuery} from '../queries/TEIQueries';
+import {programTEIQuery, teiQueryMaxSize} from '../queries/TEIQueries';
 
 // const isMoreRecent = (dateA, dateB) => {
 //     if (!dateB) {
@@ -56,8 +56,9 @@ export const fetchVisualizationData = async (engine, visualization, { startDate,
     // load data
     const results = await Promise.all(requests)
         
-    let teiDB = {
-        instances: []
+    const teiDB = {
+        instances: [],
+        overflown: false
     };
 
     results.forEach((data, i) => {
@@ -67,9 +68,13 @@ export const fetchVisualizationData = async (engine, visualization, { startDate,
         // this is just to save some RAM
         const attributesToFetch = getTEAttributes(visualization, program);
 
+        const teis = data?.teis?.trackedEntityInstances
         // process TEI response
-        if (data?.teis?.trackedEntityInstances) {
-            processTEIResponse(teiDB, data.teis.trackedEntityInstances, program, visualization, attributesToFetch);
+        if (teis) {
+            processTEIResponse(teiDB, teis, program, visualization, attributesToFetch);
+            if (teis.length === teiQueryMaxSize) {
+                teiDB.overflown = true
+            }
         } else {
             console.warn("Nothing found for program", program);
         }

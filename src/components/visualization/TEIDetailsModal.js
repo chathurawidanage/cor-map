@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import {useDataQuery, useConfig} from '@dhis2/app-runtime';
-import Loader from "../loader/Loader";
 import "./TEIDetailsModal.css";
 import {trackedEntityInstanceQuery} from "../../queries/TEIQueries";
 import i18n from "i18next";
-import { Modal, Chip, ModalTitle, ModalContent, ModalActions, Button, Table, TableRow, TableBody, TableCell, TableFoot, TableHead, TableRowHead, TableCellHead } from "@dhis2/ui-core";
+import { Modal, Chip, ModalContent, ModalActions, Button, Table, TableRow, TableBody, TableCell, TableFoot, TableHead, TableRowHead, TableCellHead } from "@dhis2/ui-core";
+import { FullscreenLoader } from "../helpers/FullscreenLoader";
 
 export const TEIDetailsModal = ({te, programs, onClose}) => {
     const {baseUrl} = useConfig();
@@ -31,7 +31,7 @@ export const TEIDetailsModal = ({te, programs, onClose}) => {
     return (
         <Modal onClose={onClose}>
             <ModalContent>
-                {loading && <Loader/>}
+                {loading && <FullscreenLoader />}
                 {error && i18n.t('An unknown error occurred!')}
                 {data && (
                     <Table>

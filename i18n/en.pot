@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2020-04-23T03:33:48.482Z\n"
-"PO-Revision-Date: 2020-04-23T03:33:48.482Z\n"
+"POT-Creation-Date: 2020-04-29T08:57:54.120Z\n"
+"PO-Revision-Date: 2020-04-29T08:57:54.120Z\n"
 
 msgid "Saved Visualizations"
 msgstr ""
@@ -14,6 +14,9 @@ msgstr ""
 msgid ""
 "Are you sure you want to delete the visualization \"{{ name }}\"?  This "
 "cannot be undone."
+msgstr ""
+
+msgid "Loading visualization..."
 msgstr ""
 
 msgid "An error occurred!"
@@ -31,7 +34,31 @@ msgstr ""
 msgid "The analytics tables were last updated at {{time}} on {{date}}"
 msgstr ""
 
+msgid "Reticulating splines..."
+msgstr ""
+
 msgid "An unknown error occurred!"
+msgstr ""
+
+msgid "Downloading data..."
+msgstr ""
+
+msgid "No relationships found for the selected program enrollment period."
+msgstr ""
+
+msgid ""
+"Too many tracked entity instances were found for the selected program "
+"enrollment start and end dates.  This visualization may be missing some "
+"instances and relationships."
+msgstr ""
+
+msgid "Select a smaller date range and click update to try again."
+msgstr ""
+
+msgid "Click on a node in the graph to see details about the TEI"
+msgstr ""
+
+msgid "Select a date range and click Update to begin"
 msgstr ""
 
 msgid "All visualizations"
