@@ -5,19 +5,34 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2020-04-18T01:39:37.380Z\n"
-"PO-Revision-Date: 2020-04-18T01:39:37.380Z\n"
+"POT-Creation-Date: 2020-04-23T03:33:48.482Z\n"
+"PO-Revision-Date: 2020-04-23T03:33:48.482Z\n"
 
 msgid "Saved Visualizations"
+msgstr ""
+
+msgid ""
+"Are you sure you want to delete the visualization \"{{ name }}\"?  This "
+"cannot be undone."
 msgstr ""
 
 msgid "An error occurred!"
 msgstr ""
 
-msgid ""
-"Are you sure you want to delete the visualization \"{{ visualizationName "
-"}}\"?  This cannot be undone."
+msgid "Last updated {{- timeAgo}}"
+msgstr ""
+
+msgid "Please generate analytics tables"
+msgstr ""
+
+msgid "learn more"
+msgstr ""
+
+msgid "The analytics tables were last updated at {{time}} on {{date}}"
 msgstr ""
 
 msgid "An unknown error occurred!"
+msgstr ""
+
+msgid "All visualizations"
 msgstr ""

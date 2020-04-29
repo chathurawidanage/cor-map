@@ -1,30 +1,30 @@
 /*Visualization Template Utils*/
 
 export function getProgramsToQuery(template) {
-    let programs = {};
-    Object.values(template.teTemplates).forEach(rt => {
+    const programs = new Set();
+    Object.values(template.teTemplates).reverse().forEach(rt => {
         if (rt.program) {
-            programs[rt.program.value] = true;
+            programs.add(rt.program.value)
         }
     });
-    return Object.keys(programs);
+    return Array.from(programs.values());
 }
 
 
 export function getTEAttributes(template, programId) {
-    let attributes = {};
+    let attributes = new Map();
     Object.values(template.teTemplates).forEach(temp => {
         if (!temp.program || temp.program.value !== programId) {
             return;
         }
 
         if (temp.genderAttribute?.value) {
-            attributes[temp.genderAttribute.value] = true;
+            attributes.set(temp.genderAttribute.value, true);
         }
 
         temp.labelAttributes.forEach(lat => {
-            attributes[lat.value] = true;
+            attributes.set(lat.value, true);
         });
     })
-    return Object.keys(attributes);
+    return attributes;
 }

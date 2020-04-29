@@ -2,11 +2,12 @@ import React from 'react'
 import {HashRouter, Switch, Route, Redirect} from "react-router-dom";
 import { StartPage } from "./components/pages/StartPage";
 
-import { DataStoreProvider } from './services/dataStore/DataStoreProvider';
+import { DataStoreProvider } from './lib/dataStore/DataStoreProvider';
 
 import { VisualizationPage } from './components/pages/VisualizationPage';
 import { ConfigurationPage } from './components/pages/ConfigurationPage';
 
+import './App.css'
 import './locales'
 
 const ContactTracingApp = (props) => {

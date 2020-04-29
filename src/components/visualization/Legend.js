@@ -4,7 +4,7 @@ import "./legend.css";
 
 export default class Legend extends React.Component {
 
-    getCircle = (label, color) => {
+    getCircle = (label, color, count) => {
         return (
             <div className="leg-item" key={label}>
                 <div className="leg-item-symbol">
@@ -13,7 +13,7 @@ export default class Legend extends React.Component {
                     </div>
                 </div>
                 <div className="leg-item-text">
-                    {label}
+                    {label} ({count})
                 </div>
             </div>
         );
@@ -22,7 +22,8 @@ export default class Legend extends React.Component {
     render() {
 
         const circles = Object.values(this.props.visualization.teTemplates).map(temp => {
-            return this.getCircle(temp.name, temp.color);
+            const count = this.props.stats[temp.program.value]
+            return this.getCircle(temp.name, temp.color, count);
         });
 
         const showIcons = Object.values(this.props.visualization.teTemplates).some(template => template.useIcon)

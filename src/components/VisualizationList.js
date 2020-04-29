@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import {useSavedObjectList} from '../services/dataStore'
+import {useSavedObjectList} from '../lib/dataStore'
 import {Link} from 'react-router-dom'
 import { MenuList, MenuItem } from '@dhis2/ui-core'
 

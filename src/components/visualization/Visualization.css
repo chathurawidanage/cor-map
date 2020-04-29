@@ -1,8 +1,11 @@
 .visualization-canvas, .visualization-canvas:focus {
     position: relative;
     flex: 1;
-    outline: none;
     background-color: #f4f6f8;
+}
+
+.visualization-canvas * {
+    outline: none;
 }
 
 .visualization-canvas-inner {
@@ -11,6 +14,10 @@
     bottom: 0;
     left: 0;
     right: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .visualization-topbar {
@@ -23,18 +30,35 @@
 .visualization-buttons button {
     margin-left: 8px;
 }
-.visualization-page {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
 .visualization-title {
-    margin-left: 24px;
     flex: 1;
     display: flex;
     flex-direction: row;
     align-items: center;
+}
+
+.visualization-hero {
+    width: 280px;
+}
+
+.visualization-topbar-leftpane {
+    margin: -8px;
+    height: 48px;
+    
+    display: flex;
+    align-items: center;
+    padding: 8px;
+}
+
+.visualization-sidebar-text {
+    text-align: center;
+}
+
+@media (min-width: 840px) {
+    .visualization-topbar-leftpane {
+        width: 280px;
+        border-right: 1px solid #e0e2e4;
+    }
 }
 
 .visualization-overlay {
