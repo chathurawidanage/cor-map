@@ -3,11 +3,13 @@ import moment from 'moment'
 import { Button, InputField } from '@dhis2/ui-core'
 
 const defaultParameters = {
-    startDate: moment().subtract(1, 'year').format('YYYY-MM-DD'),
+    startDate: moment().subtract(1, 'month').format('YYYY-MM-DD'),
     endDate: moment().subtract(1, 'day').format('YYYY-MM-DD')
 }
 
-export const VisualizationParameters = ({ parameters = defaultParameters, onSubmit }) => {
+export const VisualizationParameters = ({ parameters: initialParameters, onSubmit }) => {
+    const parameters = initialParameters || defaultParameters
+
     const [startDate, setStartDate] = useState(parameters.startDate)
     const [endDate, setEndDate] = useState(parameters.endDate)
 
@@ -15,12 +17,14 @@ export const VisualizationParameters = ({ parameters = defaultParameters, onSubm
         e.preventDefault()
         onSubmit({ startDate, endDate })
     }
+
+    const dirty = startDate !== initialParameters?.startDate || endDate !== initialParameters?.endDate
     return (
         <form onSubmit={onFormSubmit}>
             <InputField label="Enrollment start date" type="date" value={startDate} onChange={e => setStartDate(e.value)}></InputField>
             <InputField label="Enrollment end date" type="date" value={endDate} onChange={e => setEndDate(e.value)}></InputField>
             <div className="grid-col grid-col-sm">
-                <Button type="submit" primary>Update</Button>
+                <Button type="submit" primary disabled={!dirty}>Update</Button>
             </div>
         </form>
     )

@@ -1,11 +1,11 @@
 .legend {
     position: absolute;
-    bottom: 8px;
-    right: 8px;
+    bottom: 16px;
+    right: 16px;
 
     display: grid !important;
-    grid-row-gap: 8px;
-    padding: 8px;
+    grid-row-gap: 16px;
+    padding: 16px;
 }
 
 .leg-item {

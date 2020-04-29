@@ -52,6 +52,7 @@
 
 .visualization-sidebar-text {
     text-align: center;
+    font-size: 0.9rem;
 }
 
 @media (min-width: 840px) {
@@ -66,4 +67,10 @@
     border: 1px solid #e0e2e4;
     border-radius: 4px;
     background-color: #FFFFFF;
+}
+
+.alert-bar-container {
+    position: absolute;
+    bottom: 0;
+    left: 16px;
 }

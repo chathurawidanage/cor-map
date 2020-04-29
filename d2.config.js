@@ -1,6 +1,6 @@
 const config = {
     name: 'relationship-tracing',
-    title: 'Relationships Tracing',
+    title: 'Relationship Tracing',
     type: 'app',
     entryPoints: {
         app: './src/App',
