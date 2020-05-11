@@ -47,4 +47,4 @@ You can create a production build simply by running:
 > yarn build
 ```
 
-This creates a set of static files in `build/app` and also automatically generates a flat `.zip` file in `build/bundle` which can be uploaded directly to a DHIS2 instance using the App Management App, or uploaded to the [DHIS2 App Store](https://play.dhis2.org/appstore).
+This creates a set of static files in `build/app` and also automatically generates a flat `.zip` file in `build/bundle` which can be uploaded directly to a DHIS2 instance using the App Management App, or uploaded to the [DHIS2 App Hub](https://apps.dhis2.org).
