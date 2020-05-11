@@ -1,4 +1,4 @@
-# Contact Tracing App
+# Relationship Tracing App
 
 ## Installation
 
