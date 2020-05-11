@@ -12,7 +12,7 @@ The COVID-19 pandemic has challenged health systems around the globe in the firs
 
 Sri Lanka was one of the first countries to adopt DHIS2 for COVID-19 surveillance in the world. In the process of customizing DHIS2 for case-based surveillance in COVID-19, contact tracing was highlighted as a main requirement. The DHIS2 data model has significant capacity to cater to case-based surveillance and contact tracing with the DHIS2 tracker functionality. However, the Ministry of Health wanted to have a visualization for public health interventions as well as epidemiological investigations which could demonstrate the possible spread of disease across a cohort of cases and their contacts. Since the native DHIS2 did not have functionality to output this visualization, HISP Sri Lanka ventured into developing a DHIS2 custom web app which works within the DHIS2 instance.
 
-The app was initially developed by @chathurawidanage of HISP Sri Lanka and was further modified to support generic the use case of relationship mapping in case-based surveillance by @amcgee of UiO with input from DHIS2 experts.
+The app was initially developed by @chathurawidanage of HISP Sri Lanka and was further modified to support the generic use case of relationship mapping in case-based surveillance by @amcgee of UiO with input from DHIS2 experts.
 
 ## Prerequisites
 
