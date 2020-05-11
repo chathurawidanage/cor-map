@@ -4,6 +4,8 @@ A tracked entity instance relationship visualization app for [DHIS2](https://dhi
 
 An extensive user guide is available [in the docs folder](./docs)
 
+![Relationship Map Screenshot](./docs/rel-map-screenshot.png)
+
 ## Background
 
 The COVID-19 pandemic has challenged health systems around the globe in the first half of 2020 with its rapid spread across countries, affecting the lives and health of millions of people worldwide. Health authorities require rapid public health measures to contain the disease and reduce its negative impact. Quality health information has become the key to this entire process. 
