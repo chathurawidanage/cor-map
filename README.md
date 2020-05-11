@@ -39,7 +39,7 @@ You can start the application locally in development mode by running `yarn start
 
 The server you select is "sticky", so the next time you visit `http://localhost:3000` it will use an active session for the selected server (if one exists).  To clear this, simply log out from the link in the Headerbar, return to `http://localhost:3000`, and log in to a different server.
 
-## Production Build
+### Production Build
 
 You can create a production build simply by running:
 
