@@ -1,0 +1,188 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"POT-Creation-Date: 2021-03-19T09:39:35.427Z\n"
+"PO-Revision-Date: 2021-03-23 15:37+0000\n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.4.2\n"
+"Last-Translator: \n"
+"Language: fr_FR\n"
+
+msgid "No saved visualizations found, use the button below to create one!"
+msgstr ""
+"Aucune visualisation enregistrée n'a été trouvée, utilisez le bouton ci-"
+"dessous pour en créer une !"
+
+msgid "Configure Visualization"
+msgstr "Configurer la Visualisation"
+
+msgid "Step 1"
+msgstr "Étape 1"
+
+msgid "Unnamed Visualization"
+msgstr "Visualisation sans nom"
+
+msgid "Give your visualization a name"
+msgstr "Nommez votre visualisation"
+
+msgid "Step 2"
+msgstr "Étape 2"
+
+msgid "Select the relationships"
+msgstr "Sélectionner les relations"
+
+msgid "Step 3"
+msgstr "Étape 3"
+
+msgid "Define Tracked Entity Templates"
+msgstr "Définir les Modèles d'Entité Suivie"
+
+msgid "+ Add Template"
+msgstr "+ Ajouter le modèle"
+
+msgid "Step 4"
+msgstr "Étape 4"
+
+msgid "Map the Templates to Relationships"
+msgstr "Associer les modèles aux relations"
+
+msgid "Step 5"
+msgstr "Étape 5"
+
+msgid "Hide instances with no relationships"
+msgstr "Masquer les instances sans relations"
+
+msgid "Use bi-directional arrows ( <---> )"
+msgstr "Utiliser les flèches bidirectionnelles ( <---> )"
+
+msgid "Save"
+msgstr "Enregistrer"
+
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "Template for 'from'"
+msgstr "Modèle pour \"de\""
+
+msgid "Template for 'to'"
+msgstr "Modèle pour \"à\""
+
+msgid "Template name"
+msgstr "Nom du modèle"
+
+msgid "Program"
+msgstr "Programme"
+
+msgid "Show Node Label"
+msgstr "Afficher le label du nœud"
+
+msgid "Node Label Attributes"
+msgstr "Attributs du label du nœud"
+
+msgid "Delete"
+msgstr "Supprimer"
+
+msgid "Saved Visualizations"
+msgstr "Visualisations enregistrées"
+
+msgid "New Visualization"
+msgstr "Nouvelle visualisation"
+
+msgid ""
+"Are you sure you want to delete the visualization \"{{ name }}\"?  This "
+"cannot be undone."
+msgstr ""
+"Voulez-vous vraiment supprimer la visualisation \"{{nom }}\" ?  Cette "
+"opération est irréversible."
+
+msgid "Loading visualization..."
+msgstr "Chargement de la visualisation..."
+
+msgid "An error occurred!"
+msgstr "Une erreur s'est produite !"
+
+msgid "Last updated {{- timeAgo}}"
+msgstr "Dernière mise à jour {{- timeAgo}}."
+
+msgid "Please generate analytics tables"
+msgstr "Veuillez générer des tables analytiques"
+
+msgid "learn more"
+msgstr "en savoir plus"
+
+msgid "The analytics tables were last updated at {{time}} on {{date}}"
+msgstr ""
+"Les tables d'analytiques ont été mises à jour pour la dernière fois à "
+"{{heure}} le {{date}}"
+
+msgid "Male"
+msgstr "Masculin"
+
+msgid "Female"
+msgstr "Feminin"
+
+msgid "Building relationship graph..."
+msgstr "Création d'un graphique de relations..."
+
+msgid "An unknown error occurred!"
+msgstr "Une erreur inconnue s'est produite !"
+
+msgid "Enrolled programs"
+msgstr "Programmes d'enrôlement"
+
+msgid "Open in Tracker Capture"
+msgstr "Ouvrir dans Tracker Capture"
+
+msgid "Hide"
+msgstr "Masquer"
+
+msgid "Downloading data..."
+msgstr "Téléchargement des données..."
+
+msgid "No relationships found for the selected program enrollment period."
+msgstr ""
+"Aucune relation trouvée pour la période d'enrôlement au programme "
+"sélectionné."
+
+msgid ""
+"Too many tracked entity instances were found for the selected program "
+"enrollment start and end dates.  This visualization may be missing some "
+"instances and relationships."
+msgstr ""
+"Un nombre trop important d'instances d'entités suivies a été trouvé "
+"pour les dates de début et de fin d'enrôlement au programme "
+"sélectionné.  La visualisation peut ne pas contenir certaines instances "
+"et relations."
+
+msgid "Select a smaller date range and click update to try again."
+msgstr ""
+"Sélectionnez une plage de dates plus restreinte et cliquez sur \"Mettre "
+"à jour\" pour réessayer."
+
+msgid "Enrollment start date"
+msgstr "Date de début des enrôlements"
+
+msgid "Enrollment end date"
+msgstr "Date de fin des enrôlements"
+
+msgid "Update"
+msgstr "Mettre à jour"
+
+msgid "Click on a node in the graph to see details about the TEI"
+msgstr ""
+"Cliquez sur un nœud du graphique pour obtenir des détails sur la TEI"
+
+msgid "Select a date range and click Update to begin"
+msgstr ""
+"Sélectionnez une plage de dates et cliquez sur \"Mettre à jour\" pour "
+"commencer"
+
+msgid "All visualizations"
+msgstr "Toutes les visualisations"
+
+msgid "Edit"
+msgstr "Modifier"

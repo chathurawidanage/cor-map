@@ -1,6 +1,8 @@
-import { ScreenCover, CircularLoader } from "@dhis2/ui-core";
+import { Layer, CenteredContent, CircularLoader } from "@dhis2/ui";
 
 export const FullscreenLoader = () => 
-    <ScreenCover>
-        <CircularLoader />
-    </ScreenCover>
+    <Layer>
+        <CenteredContent>
+            <CircularLoader />
+        </CenteredContent>
+    </Layer>

@@ -1,5 +1,5 @@
 import React from "react";
-import { CircularLoader } from "@dhis2/ui-core";
+import { CircularLoader } from "@dhis2/ui";
 
 export const CenteredMessageLoader = ({ message }) => 
     <div className="centered-message-loader">

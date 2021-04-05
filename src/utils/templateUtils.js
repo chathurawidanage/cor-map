@@ -4,7 +4,7 @@ export function getProgramsToQuery(template) {
     const programs = new Set();
     Object.values(template.teTemplates).reverse().forEach(rt => {
         if (rt.program) {
-            programs.add(rt.program.value)
+            programs.add(rt.program)
         }
     });
     return Array.from(programs.values());
@@ -14,12 +14,8 @@ export function getProgramsToQuery(template) {
 export function getTEAttributes(template, programId) {
     let attributes = new Map();
     Object.values(template.teTemplates).forEach(temp => {
-        if (!temp.program || temp.program.value !== programId) {
+        if (temp.program !== programId) {
             return;
-        }
-
-        if (temp.genderAttribute?.value) {
-            attributes.set(temp.genderAttribute.value, true);
         }
 
         temp.labelAttributes.forEach(lat => {

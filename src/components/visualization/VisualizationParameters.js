@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react'
 import moment from 'moment'
-import { Button, InputField } from '@dhis2/ui-core'
+import { Button, InputField } from '@dhis2/ui'
+import i18n from '../../locales'
 
 const defaultParameters = {
     startDate: moment().subtract(1, 'month').format('YYYY-MM-DD'),
@@ -21,10 +22,10 @@ export const VisualizationParameters = ({ parameters: initialParameters, onSubmi
     const dirty = startDate !== initialParameters?.startDate || endDate !== initialParameters?.endDate
     return (
         <form onSubmit={onFormSubmit}>
-            <InputField label="Enrollment start date" type="date" value={startDate} onChange={e => setStartDate(e.value)}></InputField>
-            <InputField label="Enrollment end date" type="date" value={endDate} onChange={e => setEndDate(e.value)}></InputField>
             <div className="grid-col grid-col-sm">
-                <Button type="submit" primary disabled={!dirty}>Update</Button>
+                <InputField label={i18n.t("Enrollment start date")} type="date" value={startDate} onChange={e => setStartDate(e.value)}></InputField>
+                <InputField label={i18n.t("Enrollment end date")} type="date" value={endDate} onChange={e => setEndDate(e.value)}></InputField>
+                <Button type="submit" primary disabled={!dirty}>{i18n.t("Update")}</Button>
             </div>
         </form>
     )

@@ -1,5 +1,5 @@
 import { useHistory } from "react-router-dom";
-import { Button } from "@dhis2/ui-core";
+import { Button } from "@dhis2/ui";
 
 export const LinkButton = ({ to, children, ...props }) => {
     const history = useHistory()

@@ -1,6 +1,6 @@
 import { Visualization } from "../visualization/Visualization"
 import { useDataEngine } from "@dhis2/app-runtime"
-import { useSavedObject } from "../../lib/dataStore/useSavedObject"
+import { useSavedObject } from "@dhis2/app-service-datastore"
 import { useParams, useLocation, Redirect, useHistory } from "react-router-dom";
 import { useDataQuery } from "@dhis2/app-runtime";
 import { programsQuery } from "../../queries/TEIQueries";
@@ -85,7 +85,6 @@ export const VisualizationPage = () => {
             <SidebarLayout>
                 {<VisualizationSidebar
                     visualization={visualization}
-                    programs={programs}
                     parameters={parameters}
                     setParameters={updateParameters}
                 />}

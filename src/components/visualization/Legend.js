@@ -1,5 +1,4 @@
 import React from "react";
-import {Card} from "@dhis2/ui-core";
 import "./legend.css";
 
 export default class Legend extends React.Component {
@@ -22,7 +21,7 @@ export default class Legend extends React.Component {
     render() {
 
         const circles = Object.values(this.props.visualization.teTemplates).map(temp => {
-            const count = this.props.stats[temp.program.value]
+            const count = this.props.stats[temp.program]
             return this.getCircle(temp.name, temp.color, count);
         });
 
@@ -39,7 +38,7 @@ export default class Legend extends React.Component {
                                 </div>
                             </div>
                             <div className="leg-item-text">
-                                Male
+                                {i18n.t('Male')}
                             </div>
                         </div>
                         <div className="leg-item">
@@ -49,7 +48,7 @@ export default class Legend extends React.Component {
                                 </div>
                             </div>
                             <div className="leg-item-text">
-                                Female
+                                {i18n.t('Female')}
                             </div>
                         </div>
                     </>}

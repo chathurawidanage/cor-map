@@ -2,7 +2,7 @@ import React from 'react'
 import {HashRouter, Switch, Route, Redirect} from "react-router-dom";
 import { StartPage } from "./components/pages/StartPage";
 
-import { DataStoreProvider } from './lib/dataStore/DataStoreProvider';
+import { DataStoreProvider } from '@dhis2/app-service-datastore';
 
 import { VisualizationPage } from './components/pages/VisualizationPage';
 import { ConfigurationPage } from './components/pages/ConfigurationPage';

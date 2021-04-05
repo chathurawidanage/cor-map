@@ -16,7 +16,7 @@ const getNodeFromTEI = (tei, template, attributes, value) => {
   };
   
   const getTemplate = (visualization, program) => {
-    return visualization.teTemplates.find(template => template.program.value === program);
+    return visualization.teTemplates.find(template => template.program === program);
   };
   
   const processInstance = (tei, instances, nodes, edges, visualization) => {

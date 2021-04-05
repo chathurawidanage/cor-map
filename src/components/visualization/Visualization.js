@@ -7,7 +7,7 @@ import { createVisJsConfig } from '../../utils/createVisJsConfig';
 import { useDataEngine } from '@dhis2/app-runtime';
 import Legend from './Legend';
 // import { AnalyticsDelayOverlay } from './AnalyticsDelayOverlay';
-import { AlertBar } from '@dhis2/ui-core';
+import { AlertBar } from '@dhis2/ui';
 import i18n from '../../locales';
 import { CenteredMessageLoader } from '../helpers/CenteredMessageLoader';
 
