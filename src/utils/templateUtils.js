@@ -19,7 +19,7 @@ export function getTEAttributes(template, programId) {
         }
 
         temp.labelAttributes.forEach(lat => {
-            attributes.set(lat.value, true);
+            attributes.set(lat, true);
         });
     })
     return attributes;

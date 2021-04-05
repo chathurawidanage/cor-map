@@ -31,7 +31,7 @@ const processTEIResponse = (teiDB, trackedEntityInstances, program, visualizatio
                     acc[attribute] = value
                 }
                 return acc
-            })
+            }, {})
         
         tei.program = program
         teiDB.instances[tei.trackedEntityInstance] = tei
