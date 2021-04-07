@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import {useDataQuery, useConfig} from '@dhis2/app-runtime';
 import "./TEIDetailsModal.css";
 import {trackedEntityInstanceQuery} from "../../queries/TEIQueries";
-import i18n from "i18next";
-import { Modal, Chip, ModalContent, ModalActions, Button, Table, TableRow, TableBody, TableCell, TableFoot, TableHead, TableRowHead, TableCellHead } from "@dhis2/ui-core";
+import i18n from "@dhis2/d2-i18n";
+import { Modal, Chip, ModalContent, ModalActions, Button, Table, TableRow, TableBody, TableCell, TableHead, TableRowHead, TableCellHead } from "@dhis2/ui";
 import { FullscreenLoader } from "../helpers/FullscreenLoader";
 
 export const TEIDetailsModal = ({te, programs, onClose}) => {
@@ -37,7 +37,7 @@ export const TEIDetailsModal = ({te, programs, onClose}) => {
                     <Table>
                         <TableHead>
                             <TableRowHead>
-                                <TableCellHead>Enrolled programs</TableCellHead>
+                                <TableCellHead>{i18n.t('Enrolled programs')}</TableCellHead>
                                 <TableCellHead>{data.tei.enrollments.map(enrollment => {
                                     const programName = programs.find(program => program.id === enrollment.program)?.displayName
                                     return programName ? 
@@ -68,9 +68,9 @@ export const TEIDetailsModal = ({te, programs, onClose}) => {
                     className="tei-modal-tracker-button"
                     onClick={() => openInTracker(activeProgram)}
                 >
-                    Open in Tracker Capture
+                    {i18n.t('Open in Tracker Capture')}
                 </Button>
-                <Button onClick={onClose}>Hide</Button>
+                <Button onClick={onClose}>{i18n.t('Hide')}</Button>
             </ModalActions>
         </Modal>
     );

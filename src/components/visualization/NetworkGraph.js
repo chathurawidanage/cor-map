@@ -41,7 +41,7 @@ export const NetworkGraph = ({ nodes, edges, onNodeSelected }) => {
     graphEvents.stabilizationIterationsDone = useCallback(() => setStabilizing(false))
 
     return <>
-        {stabilizing && <CenteredMessageLoader message={i18n.t('Reticulating splines...')} />}
+        {stabilizing && <CenteredMessageLoader message={i18n.t('Building relationship graph...')} />}
         <Graph
             graph={{ nodes, edges }}
             options={graphOptions}

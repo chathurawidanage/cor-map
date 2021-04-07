@@ -5,10 +5,85 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2020-04-29T08:57:54.120Z\n"
-"PO-Revision-Date: 2020-04-29T08:57:54.120Z\n"
+"POT-Creation-Date: 2021-04-05T16:22:44.020Z\n"
+"PO-Revision-Date: 2021-04-05T16:22:44.020Z\n"
+
+msgid "No saved visualizations found, use the button below to create one!"
+msgstr ""
+
+msgid "Configure Visualization"
+msgstr ""
+
+msgid "Step 1"
+msgstr ""
+
+msgid "Unnamed Visualization"
+msgstr ""
+
+msgid "Give your visualization a name"
+msgstr ""
+
+msgid "Step 2"
+msgstr ""
+
+msgid "Select the relationships"
+msgstr ""
+
+msgid "Step 3"
+msgstr ""
+
+msgid "Define Tracked Entity Templates"
+msgstr ""
+
+msgid "+ Add Template"
+msgstr ""
+
+msgid "Step 4"
+msgstr ""
+
+msgid "Map the Templates to Relationships"
+msgstr ""
+
+msgid "Step 5"
+msgstr ""
+
+msgid "Hide instances with no relationships"
+msgstr ""
+
+msgid "Use bi-directional arrows ( <---> )"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Template for 'from'"
+msgstr ""
+
+msgid "Template for 'to'"
+msgstr ""
+
+msgid "Template name"
+msgstr ""
+
+msgid "Program"
+msgstr ""
+
+msgid "Show Node Label"
+msgstr ""
+
+msgid "Node Label Attributes"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
 
 msgid "Saved Visualizations"
+msgstr ""
+
+msgid "New Visualization"
 msgstr ""
 
 msgid ""
@@ -34,10 +109,25 @@ msgstr ""
 msgid "The analytics tables were last updated at {{time}} on {{date}}"
 msgstr ""
 
-msgid "Reticulating splines..."
+msgid "Male"
+msgstr ""
+
+msgid "Female"
+msgstr ""
+
+msgid "Building relationship graph..."
 msgstr ""
 
 msgid "An unknown error occurred!"
+msgstr ""
+
+msgid "Enrolled programs"
+msgstr ""
+
+msgid "Open in Tracker Capture"
+msgstr ""
+
+msgid "Hide"
 msgstr ""
 
 msgid "Downloading data..."
@@ -55,6 +145,15 @@ msgstr ""
 msgid "Select a smaller date range and click update to try again."
 msgstr ""
 
+msgid "Enrollment start date"
+msgstr ""
+
+msgid "Enrollment end date"
+msgstr ""
+
+msgid "Update"
+msgstr ""
+
 msgid "Click on a node in the graph to see details about the TEI"
 msgstr ""
 
@@ -62,4 +161,7 @@ msgid "Select a date range and click Update to begin"
 msgstr ""
 
 msgid "All visualizations"
+msgstr ""
+
+msgid "Edit"
 msgstr ""

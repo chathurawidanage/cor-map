@@ -1,5 +1,5 @@
 import React from 'react'
-import { MultiSelect, MultiSelectOption } from '@dhis2/ui-core';
+import { MultiSelect, MultiSelectOption } from '@dhis2/ui';
 
 const RELATIONSHIP_ENTITY_TEI = "TRACKED_ENTITY_INSTANCE";
 
@@ -20,8 +20,8 @@ export const RelationshipTypeSelect = ({selectedRTs, rts, onChange}) => {
         let selectedTEs = {}
 
         ref.selected.forEach(rt => {
-            selectedTEs[rtToId[rt.value].fromConstraint.trackedEntityType.id] = true;
-            selectedTEs[rtToId[rt.value].toConstraint.trackedEntityType.id] = true;
+            selectedTEs[rtToId[rt].fromConstraint.trackedEntityType.id] = true;
+            selectedTEs[rtToId[rt].toConstraint.trackedEntityType.id] = true;
         });
         onChange({
             selectedTEs: Object.keys(selectedTEs),

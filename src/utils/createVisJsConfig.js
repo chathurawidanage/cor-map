@@ -1,7 +1,7 @@
 const getNodeFromTEI = (tei, template, attributes, value) => {
     const teiId = tei.trackedEntityInstance;
     let color = template.color || "white";
-    let labelAttributes = template.useLabel ? template.labelAttributes.map(att => att.value) : [];
+    let labelAttributes = template.useLabel ? template.labelAttributes : [];
     let labelArr = labelAttributes.map(att => attributes[att]);
     let label = labelArr.length > 1 ? labelArr.join(" | ") : labelArr.length > 0 ? labelArr[0] : "";
     return {
@@ -16,7 +16,7 @@ const getNodeFromTEI = (tei, template, attributes, value) => {
   };
   
   const getTemplate = (visualization, program) => {
-    return visualization.teTemplates.find(template => template.program.value === program);
+    return visualization.teTemplates.find(template => template.program === program);
   };
   
   const processInstance = (tei, instances, nodes, edges, visualization) => {

@@ -3,8 +3,9 @@
   "version": "0.9.0",
   "private": true,
   "dependencies": {
-    "@dhis2/app-runtime": "^2.1.0",
-    "@dhis2/ui-core": "^4.16.0",
+    "@dhis2/app-runtime": "^2.8.0",
+    "@dhis2/app-service-datastore": "^1.0.0-alpha.1",
+    "@dhis2/ui": "^6.5.5",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -25,7 +26,7 @@
     "extends": "react-app"
   },
   "devDependencies": {
-    "@dhis2/cli-app-scripts": "^3.2.6"
+    "@dhis2/cli-app-scripts": "^5.7.4"
   },
   "author": {
     "name": "Chathura Widanage"

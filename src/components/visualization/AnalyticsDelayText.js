@@ -4,7 +4,7 @@ import css from 'styled-jsx/css'
 import { useDataQuery } from '@dhis2/app-runtime'
 import moment from 'moment'
 import i18n from '@dhis2/d2-i18n'
-import { Modal, ModalTitle, ModalContent, Button, ModalActions } from '@dhis2/ui-core'
+import { Modal, ModalTitle, ModalContent, Button, ModalActions } from '@dhis2/ui'
 
 const styles = css`
     .lastUpdatedText {

@@ -3,7 +3,7 @@ import { Sidebar } from "../../lib/layouts"
 import { VisualizationParameters } from "./VisualizationParameters"
 import i18n from "../../locales"
 
-export const VisualizationSidebar = ({ visualization, programs, parameters, setParameters, overflown }) => 
+export const VisualizationSidebar = ({ visualization, parameters, setParameters, overflown }) => 
     <Sidebar className="flex flex-col flex-repel">
         {parameters ? <>
             <VisualizationParameters parameters={parameters} onSubmit={setParameters} />
