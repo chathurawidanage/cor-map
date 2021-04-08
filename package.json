@@ -1,6 +1,6 @@
 {
   "name": "covid19-contact-tracing",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "private": true,
   "dependencies": {
     "@dhis2/app-runtime": "^2.8.0",
